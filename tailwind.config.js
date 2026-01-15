@@ -1,0 +1,78 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: "#2B3856",
+          50: "#E8EAF0",
+          100: "#D1D5E1",
+          200: "#A3ABC3",
+          300: "#7581A5",
+          400: "#4D5A7D",
+          500: "#2B3856",
+          600: "#232D45",
+          700: "#1B2234",
+          800: "#131723",
+          900: "#0B0C12",
+        },
+        accent: {
+          DEFAULT: "#AAF0D1",
+          50: "#F5FDF9",
+          100: "#EBFBF3",
+          200: "#D5F7E7",
+          300: "#BFF3DB",
+          400: "#AAF0D1",
+          500: "#7DE8B8",
+          600: "#50E09F",
+          700: "#28C77F",
+          800: "#1E9760",
+          900: "#146741",
+        },
+        secondary: {
+          DEFAULT: "#DADBDD",
+          50: "#FAFAFA",
+          100: "#F5F5F6",
+          200: "#EBEBEC",
+          300: "#E2E2E4",
+          400: "#DADBDD",
+          500: "#C2C3C6",
+          600: "#A9ABAF",
+          700: "#919398",
+          800: "#787B81",
+          900: "#60636A",
+        },
+        neutral: {
+          DEFAULT: "#F5F5F5",
+          50: "#FFFFFF",
+          100: "#FAFAFA",
+          200: "#F5F5F5",
+          300: "#EEEEEE",
+          400: "#E0E0E0",
+          500: "#BDBDBD",
+          600: "#9E9E9E",
+          700: "#757575",
+          800: "#616161",
+          900: "#424242",
+        },
+      },
+      fontFamily: {
+        serif: ["Libre Baskerville", "Georgia", "serif"],
+      },
+      boxShadow: {
+        soft: "0 2px 8px rgba(43, 56, 86, 0.08)",
+        medium: "0 4px 16px rgba(43, 56, 86, 0.12)",
+        large: "0 8px 32px rgba(43, 56, 86, 0.16)",
+      },
+      borderRadius: {
+        card: "12px",
+      },
+    },
+  },
+  plugins: [],
+};

@@ -1,0 +1,125 @@
+"use client";
+
+import { useQuery } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Header } from "@/components/layout";
+import { Button, Input } from "@/components/ui";
+import { ClientCard, NewClientModal } from "@/components/clients";
+import { useState, useMemo } from "react";
+
+export default function ClientsPage() {
+  const clients = useQuery(api.clients.list);
+  const [showNewClient, setShowNewClient] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredClients = useMemo(() => {
+    if (!clients) return [];
+    if (!searchTerm) return clients;
+    
+    const term = searchTerm.toLowerCase();
+    return clients.filter(
+      (client) =>
+        client.name.toLowerCase().includes(term) ||
+        client.company?.toLowerCase().includes(term) ||
+        client.email?.toLowerCase().includes(term) ||
+        client.industry?.toLowerCase().includes(term)
+    );
+  }, [clients, searchTerm]);
+
+  return (
+    <>
+      <Header
+        title="Clients"
+        description="Manage your client relationships."
+        actions={
+          <Button onClick={() => setShowNewClient(true)}>
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Client
+          </Button>
+        }
+      />
+
+      <div className="flex-1 p-8">
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
+            <svg
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <Input
+              id="search"
+              placeholder="Search clients..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12"
+            />
+          </div>
+        </div>
+
+        {/* Clients Grid */}
+        {clients === undefined ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="card animate-pulse">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-secondary rounded-card" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-secondary rounded w-1/2" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredClients.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredClients.map((client) => (
+              <ClientCard key={client._id} client={client} />
+            ))}
+          </div>
+        ) : clients.length > 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <p className="text-primary/60 mb-4">No clients found matching &quot;{searchTerm}&quot;</p>
+            <Button variant="secondary" onClick={() => setSearchTerm("")}>
+              Clear Search
+            </Button>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <p className="text-primary/60 mb-4">No clients yet</p>
+            <Button onClick={() => setShowNewClient(true)}>
+              Add Your First Client
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <NewClientModal
+        isOpen={showNewClient}
+        onClose={() => setShowNewClient(false)}
+      />
+    </>
+  );
+}
