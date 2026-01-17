@@ -1,36 +1,17 @@
-"use client";
-
-import React, { useState, useEffect } from 'react';
-
-const GOOGLE_FONTS = [
-  { name: 'Plus Jakarta Sans', family: "'Plus Jakarta Sans', sans-serif" },
-  { name: 'Manrope', family: "'Manrope', sans-serif" },
-  { name: 'Inter', family: "'Inter', sans-serif" },
-  { name: 'Outfit', family: "'Outfit', sans-serif" },
-  { name: 'Space Grotesk', family: "'Space Grotesk', sans-serif" },
-  { name: 'Lexend', family: "'Lexend', sans-serif" },
-  { name: 'Public Sans', family: "'Public Sans', sans-serif" },
-  { name: 'Poppins', family: "'Poppins', sans-serif" },
-  { name: 'Montserrat', family: "'Montserrat', sans-serif" },
-  { name: 'Fraunces', family: "'Fraunces', serif" },
-  { name: 'Playfair Display', family: "'Playfair Display', serif" },
-];
+import React from 'react';
 
 export default function DesignSystemPage() {
-  const [primaryColor, setPrimaryColor] = useState('#FFD74D');
-  const [secondaryColor, setSecondaryColor] = useState('#1A1A1A');
-  const [softColor, setSoftColor] = useState('#FFF3C4');
-  const [headingFont, setHeadingFont] = useState('Plus Jakarta Sans');
-  const [bodyFont, setBodyFont] = useState('Manrope');
-
-  const headingFontData = GOOGLE_FONTS.find(f => f.name === headingFont) || GOOGLE_FONTS[0];
-  const bodyFontData = GOOGLE_FONTS.find(f => f.name === bodyFont) || GOOGLE_FONTS[1];
+  const primaryColor = '#B6D7C4';
+  const secondaryColor = '#1A1A1A';
+  const softColor = '#E9F3ED';
+  const headingFont = 'Plus Jakarta Sans';
+  const bodyFont = 'Manrope';
 
   return (
     <div className="design-system-root">
-      {/* Load Google Fonts Dynamically */}
+      {/* Load Google Fonts */}
       <link
-        href={`https://fonts.googleapis.com/css2?family=${headingFont.replace(/ /g, '+')}:wght@600;700;800&family=${bodyFont.replace(/ /g, '+')}:wght@400;500;600&display=swap`}
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Manrope:wght@400;500;600&display=swap"
         rel="stylesheet"
       />
 
@@ -39,16 +20,16 @@ export default function DesignSystemPage() {
           --ds-primary: ${primaryColor};
           --ds-secondary: ${secondaryColor};
           --ds-bg-main: #F8F8F8;
-          --ds-bg-gradient: linear-gradient(135deg, #F8F8F8 0%, #FFF9E6 100%);
+          --ds-bg-gradient: linear-gradient(135deg, #F8F8F8 0%, ${softColor} 100%);
           --ds-white: #FFFFFF;
           --ds-light-grey: #F5F5F5;
           --ds-medium-grey: #BDBDBD;
           --ds-dark-grey: #4F4F4F;
-          --ds-soft-yellow: ${softColor};
+          --ds-soft-color: ${softColor};
           --ds-patterned: repeating-linear-gradient(45deg, #E0E0E0, #E0E0E0 10px, #F5F5F5 10px, #F5F5F5 20px);
           
-          --font-heading: ${headingFontData.family};
-          --font-body: ${bodyFontData.family};
+          --font-heading: 'Plus Jakarta Sans', sans-serif;
+          --font-body: 'Manrope', sans-serif;
           
           --radius-s: 8px;
           --radius-m: 16px;
@@ -110,7 +91,7 @@ export default function DesignSystemPage() {
 
         .ds-btn-primary {
           background: var(--ds-primary);
-          color: #1A1A1A; /* Fixed contrast for yellow usually */
+          color: #1A1A1A;
         }
 
         .ds-btn-primary:hover {
@@ -196,104 +177,25 @@ export default function DesignSystemPage() {
           border: 3px solid var(--ds-white);
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .ds-control-panel {
-          position: sticky;
-          top: 20px;
-          z-index: 100;
-          background: rgba(255, 255, 255, 0.8);
-          backdrop-filter: blur(12px);
-          border-radius: var(--radius-m);
-          padding: 24px;
-          margin-bottom: 60px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-          border: 1px solid rgba(0,0,0,0.05);
-        }
       ` }} />
 
       <header className="mb-16">
         <h1 className="ds-heading-1 mb-4 text-secondary">Web Design System</h1>
         <p className="text-xl text-gray-600 max-w-2xl">
-          Visual guidelines and component library. Customize the look and feel using the controls below.
+          Visual guidelines and component library for our application.
         </p>
       </header>
-
-      {/* Control Panel */}
-      <div className="ds-control-panel">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Primary Color</label>
-            <div className="flex items-center gap-3">
-              <input 
-                type="color" 
-                value={primaryColor} 
-                onChange={(e) => setPrimaryColor(e.target.value)}
-                className="w-10 h-10 rounded-lg cursor-pointer border-none"
-              />
-              <span className="font-mono text-sm">{primaryColor.toUpperCase()}</span>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Secondary Color</label>
-            <div className="flex items-center gap-3">
-              <input 
-                type="color" 
-                value={secondaryColor} 
-                onChange={(e) => setSecondaryColor(e.target.value)}
-                className="w-10 h-10 rounded-lg cursor-pointer border-none"
-              />
-              <span className="font-mono text-sm">{secondaryColor.toUpperCase()}</span>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Soft Color</label>
-            <div className="flex items-center gap-3">
-              <input 
-                type="color" 
-                value={softColor} 
-                onChange={(e) => setSoftColor(e.target.value)}
-                className="w-10 h-10 rounded-lg cursor-pointer border-none"
-              />
-              <span className="font-mono text-sm">{softColor.toUpperCase()}</span>
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Heading Font</label>
-            <select 
-              className="ds-input py-2 px-3 text-sm"
-              value={headingFont}
-              onChange={(e) => setHeadingFont(e.target.value)}
-            >
-              {GOOGLE_FONTS.map(f => (
-                <option key={f.name} value={f.name}>{f.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Body Font</label>
-            <select 
-              className="ds-input py-2 px-3 text-sm"
-              value={bodyFont}
-              onChange={(e) => setBodyFont(e.target.value)}
-            >
-              {GOOGLE_FONTS.map(f => (
-                <option key={f.name} value={f.name}>{f.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
 
       {/* 1. Palette */}
       <section className="ds-section">
         <h2 className="ds-section-title">Color Palette</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
           <div>
-            <div className="ds-color-swatch" style={{ background: primaryColor }}>{primaryColor.toUpperCase()}</div>
+            <div className="ds-color-swatch" style={{ background: primaryColor }}>{primaryColor}</div>
             <p className="text-sm font-semibold">Primary</p>
           </div>
           <div>
-            <div className="ds-color-swatch text-white" style={{ background: secondaryColor }}>{secondaryColor.toUpperCase()}</div>
+            <div className="ds-color-swatch text-white" style={{ background: secondaryColor }}>{secondaryColor}</div>
             <p className="text-sm font-semibold">Secondary</p>
           </div>
           <div>
@@ -309,7 +211,7 @@ export default function DesignSystemPage() {
             <p className="text-sm font-semibold">Patterned Fill</p>
           </div>
           <div>
-            <div className="ds-color-swatch" style={{ background: softColor }}>{softColor.toUpperCase()}</div>
+            <div className="ds-color-swatch" style={{ background: softColor }}>{softColor}</div>
             <p className="text-sm font-semibold">Soft Color</p>
           </div>
         </div>
@@ -371,7 +273,7 @@ export default function DesignSystemPage() {
               <span className="ds-badge ds-badge-primary">In Progress</span>
               <span className="ds-badge ds-badge-dark">Completed</span>
               <span className="ds-badge" style={{ background: '#E0E0E0' }}>Draft</span>
-              <span className="ds-badge" style={{ background: softColor, color: '#B45309' }}>Pending</span>
+              <span className="ds-badge" style={{ background: softColor, color: '#1A1A1A' }}>Pending</span>
             </div>
           </div>
         </div>
@@ -424,7 +326,7 @@ export default function DesignSystemPage() {
         </div>
       </section>
 
-      {/* 6. Navigation Mocks */}
+      {/* 6. Navigation Elements */}
       <section className="ds-section">
         <h2 className="ds-section-title">Navigation Elements</h2>
         <div className="ds-card">
@@ -439,7 +341,7 @@ export default function DesignSystemPage() {
 
       <footer className="mt-20 pt-10 border-t border-gray-200 flex justify-between items-center text-sm text-gray-400">
         <p>© 2026 Web Design System Guide</p>
-        <p>Version 1.1</p>
+        <p>Version 1.2</p>
       </footer>
     </div>
   );
