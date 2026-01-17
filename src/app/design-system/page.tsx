@@ -19,6 +19,7 @@ const GOOGLE_FONTS = [
 export default function DesignSystemPage() {
   const [primaryColor, setPrimaryColor] = useState('#FFD74D');
   const [secondaryColor, setSecondaryColor] = useState('#1A1A1A');
+  const [softColor, setSoftColor] = useState('#FFF3C4');
   const [headingFont, setHeadingFont] = useState('Plus Jakarta Sans');
   const [bodyFont, setBodyFont] = useState('Manrope');
 
@@ -43,7 +44,7 @@ export default function DesignSystemPage() {
           --ds-light-grey: #F5F5F5;
           --ds-medium-grey: #BDBDBD;
           --ds-dark-grey: #4F4F4F;
-          --ds-soft-yellow: #FFF3C4;
+          --ds-soft-yellow: ${softColor};
           --ds-patterned: repeating-linear-gradient(45deg, #E0E0E0, #E0E0E0 10px, #F5F5F5 10px, #F5F5F5 20px);
           
           --font-heading: ${headingFontData.family};
@@ -219,7 +220,7 @@ export default function DesignSystemPage() {
 
       {/* Control Panel */}
       <div className="ds-control-panel">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Primary Color</label>
             <div className="flex items-center gap-3">
@@ -242,6 +243,18 @@ export default function DesignSystemPage() {
                 className="w-10 h-10 rounded-lg cursor-pointer border-none"
               />
               <span className="font-mono text-sm">{secondaryColor.toUpperCase()}</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Soft Color</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="color" 
+                value={softColor} 
+                onChange={(e) => setSoftColor(e.target.value)}
+                className="w-10 h-10 rounded-lg cursor-pointer border-none"
+              />
+              <span className="font-mono text-sm">{softColor.toUpperCase()}</span>
             </div>
           </div>
           <div>
@@ -296,8 +309,8 @@ export default function DesignSystemPage() {
             <p className="text-sm font-semibold">Patterned Fill</p>
           </div>
           <div>
-            <div className="ds-color-swatch" style={{ background: '#FFF3C4' }}>#FFF3C4</div>
-            <p className="text-sm font-semibold">Soft Yellow</p>
+            <div className="ds-color-swatch" style={{ background: softColor }}>{softColor.toUpperCase()}</div>
+            <p className="text-sm font-semibold">Soft Color</p>
           </div>
         </div>
       </section>
@@ -358,7 +371,7 @@ export default function DesignSystemPage() {
               <span className="ds-badge ds-badge-primary">In Progress</span>
               <span className="ds-badge ds-badge-dark">Completed</span>
               <span className="ds-badge" style={{ background: '#E0E0E0' }}>Draft</span>
-              <span className="ds-badge" style={{ background: '#FFF3C4', color: '#B45309' }}>Pending</span>
+              <span className="ds-badge" style={{ background: softColor, color: '#B45309' }}>Pending</span>
             </div>
           </div>
         </div>
