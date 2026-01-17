@@ -1,18 +1,42 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
+
+const GOOGLE_FONTS = [
+  { name: 'Plus Jakarta Sans', family: "'Plus Jakarta Sans', sans-serif" },
+  { name: 'Manrope', family: "'Manrope', sans-serif" },
+  { name: 'Inter', family: "'Inter', sans-serif" },
+  { name: 'Outfit', family: "'Outfit', sans-serif" },
+  { name: 'Space Grotesk', family: "'Space Grotesk', sans-serif" },
+  { name: 'Lexend', family: "'Lexend', sans-serif" },
+  { name: 'Public Sans', family: "'Public Sans', sans-serif" },
+  { name: 'Poppins', family: "'Poppins', sans-serif" },
+  { name: 'Montserrat', family: "'Montserrat', sans-serif" },
+  { name: 'Fraunces', family: "'Fraunces', serif" },
+  { name: 'Playfair Display', family: "'Playfair Display', serif" },
+];
 
 export default function DesignSystemPage() {
+  const [primaryColor, setPrimaryColor] = useState('#FFD74D');
+  const [secondaryColor, setSecondaryColor] = useState('#1A1A1A');
+  const [headingFont, setHeadingFont] = useState('Plus Jakarta Sans');
+  const [bodyFont, setBodyFont] = useState('Manrope');
+
+  const headingFontData = GOOGLE_FONTS.find(f => f.name === headingFont) || GOOGLE_FONTS[0];
+  const bodyFontData = GOOGLE_FONTS.find(f => f.name === bodyFont) || GOOGLE_FONTS[1];
+
   return (
     <div className="design-system-root">
-      {/* Load Google Fonts */}
+      {/* Load Google Fonts Dynamically */}
       <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Manrope:wght@400;500;600&display=swap"
+        href={`https://fonts.googleapis.com/css2?family=${headingFont.replace(/ /g, '+')}:wght@600;700;800&family=${bodyFont.replace(/ /g, '+')}:wght@400;500;600&display=swap`}
         rel="stylesheet"
       />
 
       <style dangerouslySetInnerHTML={{ __html: `
         .design-system-root {
-          --ds-primary: #FFD74D;
-          --ds-secondary: #1A1A1A;
+          --ds-primary: ${primaryColor};
+          --ds-secondary: ${secondaryColor};
           --ds-bg-main: #F8F8F8;
           --ds-bg-gradient: linear-gradient(135deg, #F8F8F8 0%, #FFF9E6 100%);
           --ds-white: #FFFFFF;
@@ -22,8 +46,8 @@ export default function DesignSystemPage() {
           --ds-soft-yellow: #FFF3C4;
           --ds-patterned: repeating-linear-gradient(45deg, #E0E0E0, #E0E0E0 10px, #F5F5F5 10px, #F5F5F5 20px);
           
-          --font-heading: 'Plus Jakarta Sans', sans-serif;
-          --font-body: 'Manrope', sans-serif;
+          --font-heading: ${headingFontData.family};
+          --font-body: ${bodyFontData.family};
           
           --radius-s: 8px;
           --radius-m: 16px;
@@ -85,7 +109,7 @@ export default function DesignSystemPage() {
 
         .ds-btn-primary {
           background: var(--ds-primary);
-          color: var(--ds-secondary);
+          color: #1A1A1A; /* Fixed contrast for yellow usually */
         }
 
         .ds-btn-primary:hover {
@@ -160,7 +184,7 @@ export default function DesignSystemPage() {
           display: inline-block;
         }
 
-        .ds-badge-primary { background: var(--ds-primary); color: var(--ds-secondary); }
+        .ds-badge-primary { background: var(--ds-primary); color: #1A1A1A; }
         .ds-badge-dark { background: var(--ds-secondary); color: var(--ds-white); }
 
         .ds-avatar {
@@ -171,26 +195,93 @@ export default function DesignSystemPage() {
           border: 3px solid var(--ds-white);
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+
+        .ds-control-panel {
+          position: sticky;
+          top: 20px;
+          z-index: 100;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(12px);
+          border-radius: var(--radius-m);
+          padding: 24px;
+          margin-bottom: 60px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+          border: 1px solid rgba(0,0,0,0.05);
+        }
       ` }} />
 
       <header className="mb-16">
-        <h1 className="ds-heading-1 mb-4">Crextio Design System</h1>
+        <h1 className="ds-heading-1 mb-4 text-secondary">Web Design System</h1>
         <p className="text-xl text-gray-600 max-w-2xl">
-          Visual guidelines and component library for the Crextio Modern Bento aesthetic.
+          Visual guidelines and component library. Customize the look and feel using the controls below.
         </p>
       </header>
+
+      {/* Control Panel */}
+      <div className="ds-control-panel">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Primary Color</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="color" 
+                value={primaryColor} 
+                onChange={(e) => setPrimaryColor(e.target.value)}
+                className="w-10 h-10 rounded-lg cursor-pointer border-none"
+              />
+              <span className="font-mono text-sm">{primaryColor.toUpperCase()}</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Secondary Color</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="color" 
+                value={secondaryColor} 
+                onChange={(e) => setSecondaryColor(e.target.value)}
+                className="w-10 h-10 rounded-lg cursor-pointer border-none"
+              />
+              <span className="font-mono text-sm">{secondaryColor.toUpperCase()}</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Heading Font</label>
+            <select 
+              className="ds-input py-2 px-3 text-sm"
+              value={headingFont}
+              onChange={(e) => setHeadingFont(e.target.value)}
+            >
+              {GOOGLE_FONTS.map(f => (
+                <option key={f.name} value={f.name}>{f.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Body Font</label>
+            <select 
+              className="ds-input py-2 px-3 text-sm"
+              value={bodyFont}
+              onChange={(e) => setBodyFont(e.target.value)}
+            >
+              {GOOGLE_FONTS.map(f => (
+                <option key={f.name} value={f.name}>{f.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
 
       {/* 1. Palette */}
       <section className="ds-section">
         <h2 className="ds-section-title">Color Palette</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
           <div>
-            <div className="ds-color-swatch" style={{ background: '#FFD74D' }}>#FFD74D</div>
-            <p className="text-sm font-semibold">Primary (Sun)</p>
+            <div className="ds-color-swatch" style={{ background: primaryColor }}>{primaryColor.toUpperCase()}</div>
+            <p className="text-sm font-semibold">Primary</p>
           </div>
           <div>
-            <div className="ds-color-swatch text-white" style={{ background: '#1A1A1A' }}>#1A1A1A</div>
-            <p className="text-sm font-semibold">Secondary (Charcoal)</p>
+            <div className="ds-color-swatch text-white" style={{ background: secondaryColor }}>{secondaryColor.toUpperCase()}</div>
+            <p className="text-sm font-semibold">Secondary</p>
           </div>
           <div>
             <div className="ds-color-swatch border border-gray-200" style={{ background: '#FFFFFF' }}>#FFFFFF</div>
@@ -216,15 +307,15 @@ export default function DesignSystemPage() {
         <h2 className="ds-section-title">Typography</h2>
         <div className="ds-card space-y-8">
           <div>
-            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Heading 1 - Plus Jakarta Sans Bold</p>
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Heading 1 - {headingFont} Bold</p>
             <h1 className="ds-heading-1">The quick brown fox jumps over the lazy dog</h1>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Heading 2 - Plus Jakarta Sans SemiBold</p>
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Heading 2 - {headingFont} SemiBold</p>
             <h2 className="ds-heading-2">The quick brown fox jumps over the lazy dog</h2>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Body Text - Manrope Regular/Medium</p>
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-widest">Body Text - {bodyFont} Regular/Medium</p>
             <p className="text-lg leading-relaxed">
               Experience the future of productivity with our bento-inspired interface. 
               Designed for clarity, efficiency, and a touch of warmth.
@@ -286,10 +377,10 @@ export default function DesignSystemPage() {
               {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
                 <div key={i} className="flex-1 bg-gray-100 rounded-t-xl overflow-hidden relative" style={{ height: '100%' }}>
                   <div 
-                    className={`absolute bottom-0 w-full rounded-t-xl transition-all duration-500 ${i === 3 ? 'bg-ds-primary' : 'bg-secondary'}`}
+                    className={`absolute bottom-0 w-full rounded-t-xl transition-all duration-500`}
                     style={{ 
                       height: `${h}%`, 
-                      backgroundColor: i === 3 ? '#FFD74D' : '#1A1A1A'
+                      backgroundColor: i === 3 ? primaryColor : secondaryColor
                     }} 
                   />
                 </div>
@@ -307,14 +398,14 @@ export default function DesignSystemPage() {
               </div>
             </div>
             <div className="ds-progress-bar">
-              <div className="ds-progress-fill" style={{ width: '65%' }} />
+              <div className="ds-progress-fill" style={{ width: '65%', backgroundColor: primaryColor }} />
             </div>
             <div className="ds-progress-bar">
               <div className="ds-progress-fill ds-progress-patterned" style={{ width: '40%' }} />
             </div>
             <div className="mt-4 flex justify-between text-xs font-bold">
               <span>Hired</span>
-              <span className="text-ds-primary">15%</span>
+              <span style={{ color: primaryColor }}>15%</span>
             </div>
           </div>
         </div>
@@ -324,7 +415,7 @@ export default function DesignSystemPage() {
       <section className="ds-section">
         <h2 className="ds-section-title">Navigation Elements</h2>
         <div className="ds-card">
-          <nav className="flex bg-gray-100 p-2 rounded-full inline-flex gap-2">
+          <nav className="inline-flex bg-gray-100 p-2 rounded-full gap-2">
             <button className="ds-btn ds-btn-secondary py-2 px-6">Dashboard</button>
             <button className="ds-btn ds-btn-ghost border-none py-2 px-6">People</button>
             <button className="ds-btn ds-btn-ghost border-none py-2 px-6">Hiring</button>
@@ -334,8 +425,8 @@ export default function DesignSystemPage() {
       </section>
 
       <footer className="mt-20 pt-10 border-t border-gray-200 flex justify-between items-center text-sm text-gray-400">
-        <p>© 2026 Crextio Software Corp.</p>
-        <p>Design System v1.0</p>
+        <p>© 2026 Web Design System Guide</p>
+        <p>Version 1.1</p>
       </footer>
     </div>
   );

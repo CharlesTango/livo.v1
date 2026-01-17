@@ -126,7 +126,7 @@ export default function HomePage() {
           <div>© 2026 Livo. Legal Practice Management.</div>
           <div className="flex items-center gap-6">
             <Link href="/design-system" className="hover:text-primary transition-colors">
-              Style Guide
+              Web Design System
             </Link>
           </div>
         </div>
