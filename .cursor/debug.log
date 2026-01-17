@@ -1,0 +1,5 @@
+{"location":"signup/page.tsx:22","message":"Auth state changed","data":{"isAuthenticated":false,"isLoading":false},"timestamp":1768504722125,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"signup/page.tsx:22","message":"Auth state changed","data":{"isAuthenticated":false,"isLoading":false},"timestamp":1768504722125,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"signup/page.tsx:50","message":"FormData created, calling signIn","data":{"email":"test1@mail.com","hasName":true,"formDataKeys":["email","password","name","flow"]},"timestamp":1768504740456,"sessionId":"debug-session","runId":"run1","hypothesisId":"D"}
+{"location":"signup/page.tsx:41","message":"Signup attempt started","data":{"email":"test1@mail.com","hasName":true,"nameLength":10,"passwordLength":8},"timestamp":1768504740456,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"signup/page.tsx:54","message":"signIn completed successfully","data":{"email":"test1@mail.com"},"timestamp":1768504747490,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}

@@ -19,13 +19,10 @@ export default function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'signup/page.tsx:22',message:'Auth state changed',data:{isAuthenticated,isLoading},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     if (isAuthenticated) {
       redirect("/dashboard");
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,10 +40,6 @@ export default function SignupPage() {
 
     setIsSubmitting(true);
 
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'signup/page.tsx:41',message:'Signup attempt started',data:{email,hasName:!!name,nameLength:name.length,passwordLength:password.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-
     try {
       const formData = new FormData();
       formData.set("email", email);
@@ -54,19 +47,8 @@ export default function SignupPage() {
       formData.set("name", name);
       formData.set("flow", "signUp");
       
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'signup/page.tsx:50',message:'FormData created, calling signIn',data:{email,hasName:!!name,formDataKeys:Array.from(formData.keys())},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
-      
       await signIn("password", formData);
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'signup/page.tsx:54',message:'signIn completed successfully',data:{email},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
     } catch (err) {
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'signup/page.tsx:57',message:'signIn error caught',data:{errorMessage:err instanceof Error?err.message:'unknown',errorName:err instanceof Error?err.name:'unknown',errorString:String(err),email,hasName:!!name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,C'})}).catch(()=>{});
-      // #endregion
       setError("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
