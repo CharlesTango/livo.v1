@@ -57,31 +57,32 @@ export default function SignupPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral">
-        <div className="animate-pulse">
-          <div className="h-8 w-32 bg-secondary rounded-card"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 bg-primary rounded-m mb-4"></div>
+          <div className="h-4 w-32 bg-neutral-medium/20 rounded-pill"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral flex">
+    <div className="min-h-screen bg-background flex">
       {/* Left Side - Decorative */}
-      <div className="hidden lg:flex flex-1 bg-primary items-center justify-center relative overflow-hidden">
+      <div className="hidden lg:flex flex-1 bg-secondary items-center justify-center relative overflow-hidden">
         {/* Pattern */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0" style={{
-            backgroundImage: `repeating-linear-gradient(45deg, #AAF0D1 0, #AAF0D1 1px, transparent 0, transparent 50%)`,
-            backgroundSize: '30px 30px'
+            backgroundImage: `repeating-linear-gradient(45deg, #B6D7C4 0, #B6D7C4 10px, transparent 10px, transparent 20px)`,
+            backgroundSize: '40px 40px'
           }}></div>
         </div>
         
-        <div className="relative text-center px-12">
-          <h2 className="text-4xl font-serif font-bold text-white mb-4">
+        <div className="relative text-center px-16 max-w-xl">
+          <h2 className="text-5xl font-heading font-extrabold text-white mb-6 leading-tight">
             Start Managing Smarter
           </h2>
-          <p className="text-white/70 text-lg">
+          <p className="text-white/70 text-xl font-body font-medium leading-relaxed">
             Join legal professionals who use Livo to streamline their practice.
           </p>
         </div>
@@ -91,27 +92,27 @@ export default function SignupPage() {
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-primary rounded-card flex items-center justify-center">
-              <span className="text-white font-serif font-bold text-xl">L</span>
+          <Link href="/" className="flex items-center gap-4 mb-12">
+            <div className="w-12 h-12 bg-primary rounded-m flex items-center justify-center shadow-subtle">
+              <span className="text-secondary font-heading font-extrabold text-2xl">L</span>
             </div>
-            <span className="text-2xl font-serif font-bold text-primary">Livo</span>
+            <span className="text-3xl font-heading font-extrabold text-secondary tracking-tight">Livo</span>
           </Link>
 
           {/* Form Card */}
-          <div className="card">
-            <h1 className="text-2xl font-bold text-primary mb-2">Create your account</h1>
-            <p className="text-primary/60 mb-8">
+          <div className="card shadow-large p-10">
+            <h1 className="text-3xl font-heading font-extrabold text-secondary mb-3">Create account</h1>
+            <p className="text-secondary/60 mb-10 font-body font-medium leading-relaxed">
               Get started with Livo in just a few steps.
             </p>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-card mb-6">
+              <div className="bg-accent-error/10 border-2 border-accent-error/20 text-accent-error px-6 py-4 rounded-m mb-8 font-body font-bold text-sm">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <Input
                 id="name"
                 type="text"
@@ -136,7 +137,7 @@ export default function SignupPage() {
                 id="password"
                 type="password"
                 label="Password"
-                placeholder="Create a password (min 8 characters)"
+                placeholder="Min 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -154,18 +155,19 @@ export default function SignupPage() {
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full py-4 text-lg"
                 isLoading={isSubmitting}
+                size="lg"
               >
                 Create Account
               </Button>
             </form>
 
-            <p className="mt-6 text-center text-primary/60">
+            <p className="mt-8 text-center text-secondary/60 font-body font-medium">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-primary font-bold hover:underline"
+                className="text-secondary font-bold hover:underline"
               >
                 Sign in
               </Link>

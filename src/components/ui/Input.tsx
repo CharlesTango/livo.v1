@@ -22,12 +22,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           id={id}
           className={cn(
             "input",
-            error && "border-red-500 focus:ring-red-200 focus:border-red-500",
+            error && "ring-2 ring-accent-error/20 border-accent-error",
             className
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <p className="mt-1 text-sm text-accent-error">{error}</p>}
       </div>
     );
   }

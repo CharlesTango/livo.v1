@@ -87,11 +87,11 @@ export default function MattersPage() {
 
       <div className="flex-1 p-8">
         {/* Filters */}
-        <div className="flex flex-wrap items-end gap-4 mb-6">
-          <div className="flex-1 min-w-[200px] max-w-md">
+        <div className="flex flex-wrap items-end gap-6 mb-10">
+          <div className="flex-1 min-w-[300px] max-w-md">
             <div className="relative">
               <svg
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40"
+                className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary/40"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -99,7 +99,7 @@ export default function MattersPage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
@@ -108,12 +108,12 @@ export default function MattersPage() {
                 placeholder="Search matters..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12"
+                className="pl-14"
               />
             </div>
           </div>
           
-          <div className="w-40">
+          <div className="w-48">
             <Select
               id="status"
               options={statusOptions}
@@ -122,7 +122,7 @@ export default function MattersPage() {
             />
           </div>
           
-          <div className="w-40">
+          <div className="w-48">
             <Select
               id="priority"
               options={priorityOptions}
@@ -132,7 +132,7 @@ export default function MattersPage() {
           </div>
           
           {hasFilters && (
-            <Button variant="ghost" size="sm" onClick={clearFilters}>
+            <Button variant="ghost" size="md" onClick={clearFilters} className="px-8">
               Clear Filters
             </Button>
           )}
@@ -140,25 +140,13 @@ export default function MattersPage() {
 
         {/* Matters Grid */}
         {matters === undefined ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="card animate-pulse">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-secondary rounded-card" />
-                  <div className="flex-1">
-                    <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
-                    <div className="h-3 bg-secondary rounded w-1/2 mb-4" />
-                    <div className="flex gap-2">
-                      <div className="h-6 w-16 bg-secondary rounded-full" />
-                      <div className="h-6 w-16 bg-secondary rounded-full" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div key={i} className="card animate-pulse h-64 bg-white/50" />
             ))}
           </div>
         ) : filteredMatters.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {filteredMatters.map((matter) => (
               <MatterCard
                 key={matter._id}
@@ -168,26 +156,26 @@ export default function MattersPage() {
             ))}
           </div>
         ) : matters.length > 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <div className="w-20 h-20 bg-neutral-light rounded-pill flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <p className="text-primary/60 mb-4">No matters found with the current filters.</p>
-            <Button variant="secondary" onClick={clearFilters}>
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">No matters found with the current filters.</p>
+            <Button variant="secondary" onClick={clearFilters} size="lg">
               Clear Filters
             </Button>
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <div className="w-20 h-20 bg-neutral-light rounded-pill flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <p className="text-primary/60 mb-4">No matters yet</p>
-            <Button onClick={() => setShowNewMatter(true)}>
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">No matters yet</p>
+            <Button onClick={() => setShowNewMatter(true)} size="lg">
               Create Your First Matter
             </Button>
           </div>

@@ -107,10 +107,10 @@ export default function ClientDetailPage() {
     return (
       <>
         <Header title="Client Not Found" />
-        <div className="flex-1 p-8">
-          <div className="text-center py-12">
-            <p className="text-primary/60 mb-4">This client could not be found.</p>
-            <Button onClick={() => router.push("/clients")}>
+        <div className="flex-1 p-8 bg-background">
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">This client could not be found.</p>
+            <Button onClick={() => router.push("/clients")} size="lg">
               Back to Clients
             </Button>
           </div>
@@ -126,23 +126,23 @@ export default function ClientDetailPage() {
         description={client.company || undefined}
         actions={
           isEditing ? (
-            <div className="flex gap-3">
-              <Button variant="secondary" onClick={cancelEditing}>
+            <div className="flex gap-4">
+              <Button variant="ghost" onClick={cancelEditing} className="px-8">
                 Cancel
               </Button>
-              <Button onClick={saveChanges} isLoading={isSaving}>
+              <Button onClick={saveChanges} isLoading={isSaving} className="px-8">
                 Save Changes
               </Button>
             </div>
           ) : (
-            <div className="flex gap-3">
-              <Button variant="secondary" onClick={startEditing}>
+            <div className="flex gap-4">
+              <Button variant="ghost" onClick={startEditing} className="px-8">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 Edit
               </Button>
-              <Button onClick={() => setShowNewMatter(true)}>
+              <Button onClick={() => setShowNewMatter(true)} className="px-8">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
@@ -157,20 +157,20 @@ export default function ClientDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Client Details */}
           <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-accent/20 rounded-card flex items-center justify-center">
-                    <span className="text-primary font-bold text-xl">
+            <Card className="h-full">
+              <CardHeader className="mb-8">
+                <CardTitle className="flex items-center gap-4 text-3xl font-heading font-extrabold">
+                  <div className="w-16 h-16 bg-primary rounded-m flex items-center justify-center shadow-subtle">
+                    <span className="text-secondary font-heading font-extrabold text-2xl">
                       {client.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   {isEditing ? "Edit Details" : "Client Details"}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isEditing ? (
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <Input
                       id="name"
                       label="Name"
@@ -214,10 +214,10 @@ export default function ClientDetailPage() {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                     />
-                    <div className="pt-4 border-t border-secondary/30">
+                    <div className="pt-8 border-t border-neutral-light">
                       <Button
                         variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 w-full"
+                        className="text-accent-error border-accent-error hover:bg-accent-error hover:text-white w-full"
                         onClick={handleDelete}
                         isLoading={isDeleting}
                       >
@@ -226,39 +226,39 @@ export default function ClientDetailPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {client.email && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-1">Email</p>
-                        <p className="text-primary">{client.email}</p>
+                      <div className="p-4 rounded-m bg-neutral-light/50">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Email</p>
+                        <p className="text-secondary font-body font-bold">{client.email}</p>
                       </div>
                     )}
                     {client.phone && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-1">Phone</p>
-                        <p className="text-primary">{client.phone}</p>
+                      <div className="p-4 rounded-m bg-neutral-light/50">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Phone</p>
+                        <p className="text-secondary font-body font-bold">{client.phone}</p>
                       </div>
                     )}
                     {client.address && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-1">Address</p>
-                        <p className="text-primary">{client.address}</p>
+                      <div className="p-4 rounded-m bg-neutral-light/50">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Address</p>
+                        <p className="text-secondary font-body font-bold">{client.address}</p>
                       </div>
                     )}
                     {client.industry && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-1">Industry</p>
-                        <Badge variant="default">{client.industry}</Badge>
+                      <div className="p-4 rounded-m bg-neutral-light/50">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Industry</p>
+                        <Badge variant="default" className="bg-primary/20 text-secondary">{client.industry}</Badge>
                       </div>
                     )}
                     {client.notes && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-1">Notes</p>
-                        <p className="text-primary/70 text-sm">{client.notes}</p>
+                      <div className="p-4 rounded-m bg-neutral-light/50">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Notes</p>
+                        <p className="text-secondary/70 font-body font-medium leading-relaxed">{client.notes}</p>
                       </div>
                     )}
-                    <div className="pt-4 border-t border-secondary/30">
-                      <p className="text-xs text-primary/50">
+                    <div className="pt-8 border-t border-neutral-light">
+                      <p className="text-xs font-bold text-secondary/30 uppercase tracking-widest">
                         Added {formatDate(client.createdAt)}
                       </p>
                     </div>
@@ -270,24 +270,24 @@ export default function ClientDetailPage() {
 
           {/* Matters */}
           <div className="lg:col-span-2">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>
+            <Card className="h-full">
+              <CardHeader className="flex flex-row items-center justify-between mb-8">
+                <CardTitle className="text-3xl font-heading font-extrabold">
                   Matters ({matters?.length || 0})
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {matters && matters.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-6">
                     {matters.map((matter) => (
                       <MatterCard key={matter._id} matter={matter} />
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-primary/60 mb-4">No matters for this client yet.</p>
-                    <Button variant="secondary" onClick={() => setShowNewMatter(true)}>
-                      Create Matter
+                  <div className="text-center py-20 bg-neutral-light/30 rounded-m">
+                    <p className="text-xl font-heading font-bold text-secondary/60 mb-8">No matters for this client yet.</p>
+                    <Button onClick={() => setShowNewMatter(true)} size="lg">
+                      Create First Matter
                     </Button>
                   </div>
                 )}

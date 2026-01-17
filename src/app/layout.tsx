@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Manrope } from "next/font/google";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 import "./globals.css";
+
+const headingFont = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  weight: ["600", "700", "800"],
+});
+
+const bodyFont = Manrope({
+  subsets: ["latin"],
+  variable: "--font-body",
+  weight: ["400", "500", "600"],
+});
 
 export const metadata: Metadata = {
   title: "Livo - Legal Matter Management",
@@ -10,36 +23,36 @@ export const metadata: Metadata = {
 
 function SetupInstructions() {
   return (
-    <html lang="en">
-      <body>
-        <div className="min-h-screen bg-neutral flex items-center justify-center p-8">
-          <div className="bg-white rounded-card shadow-soft p-8 max-w-lg text-center border border-secondary/30">
-            <div className="w-16 h-16 bg-primary rounded-card flex items-center justify-center mx-auto mb-6">
-              <span className="text-white font-serif font-bold text-3xl">L</span>
+    <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
+      <body className="font-body">
+        <div className="min-h-screen bg-background flex items-center justify-center p-8">
+          <div className="bg-white rounded-l shadow-subtle p-12 max-w-lg text-center">
+            <div className="w-20 h-20 bg-primary rounded-m flex items-center justify-center mx-auto mb-8">
+              <span className="text-secondary font-heading font-extrabold text-4xl">L</span>
             </div>
-            <h1 className="text-2xl font-bold text-primary mb-4 font-serif">Setup Required</h1>
-            <p className="text-primary/60 mb-6">
+            <h1 className="text-3xl font-extrabold text-secondary mb-6 font-heading">Setup Required</h1>
+            <p className="text-secondary/60 mb-8">
               Livo requires a Convex backend to function. Please follow these steps:
             </p>
-            <ol className="text-left text-sm text-primary/70 space-y-3 mb-6">
-              <li className="flex gap-3">
-                <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xs shrink-0">1</span>
-                <span>Run <code className="bg-secondary/50 px-2 py-0.5 rounded">npx convex dev</code> in your terminal</span>
+            <ol className="text-left text-sm text-secondary/70 space-y-4 mb-8">
+              <li className="flex gap-4">
+                <span className="w-8 h-8 bg-primary rounded-pill flex items-center justify-center text-secondary font-bold text-sm shrink-0">1</span>
+                <span className="flex items-center">Run <code className="bg-neutral-light px-2 py-1 rounded-s mx-1 font-mono">npx convex dev</code> in your terminal</span>
               </li>
-              <li className="flex gap-3">
-                <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xs shrink-0">2</span>
-                <span>Follow the prompts to create a new Convex project</span>
+              <li className="flex gap-4">
+                <span className="w-8 h-8 bg-primary rounded-pill flex items-center justify-center text-secondary font-bold text-sm shrink-0">2</span>
+                <span className="flex items-center">Follow the prompts to create a new Convex project</span>
               </li>
-              <li className="flex gap-3">
-                <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xs shrink-0">3</span>
-                <span>Convex will automatically create your <code className="bg-secondary/50 px-2 py-0.5 rounded">.env.local</code> file</span>
+              <li className="flex gap-4">
+                <span className="w-8 h-8 bg-primary rounded-pill flex items-center justify-center text-secondary font-bold text-sm shrink-0">3</span>
+                <span className="flex items-center">Convex will automatically create your <code className="bg-neutral-light px-2 py-1 rounded-s mx-1 font-mono">.env.local</code> file</span>
               </li>
-              <li className="flex gap-3">
-                <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-primary font-bold text-xs shrink-0">4</span>
-                <span>Restart the Next.js dev server</span>
+              <li className="flex gap-4">
+                <span className="w-8 h-8 bg-primary rounded-pill flex items-center justify-center text-secondary font-bold text-sm shrink-0">4</span>
+                <span className="flex items-center">Restart the Next.js dev server</span>
               </li>
             </ol>
-            <p className="text-xs text-primary/50">
+            <p className="text-xs text-secondary/40">
               See README.md for detailed setup instructions.
             </p>
           </div>
@@ -61,8 +74,8 @@ export default function RootLayout({
 
   return (
     <ConvexAuthNextjsServerProvider>
-      <html lang="en">
-        <body>
+      <html lang="en" className={`${headingFont.variable} ${bodyFont.variable}`}>
+        <body className="font-body">
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </body>
       </html>

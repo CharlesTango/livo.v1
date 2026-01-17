@@ -68,15 +68,15 @@ export function NewClientModal({ isOpen, onClose }: NewClientModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Add New Client" className="max-w-2xl">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Add New Client" className="max-w-3xl">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-card mb-6">
+        <div className="bg-accent-error/10 border-2 border-accent-error/20 text-accent-error px-6 py-4 rounded-m mb-8 font-body font-bold text-sm">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
             id="name"
             label="Client Name *"
@@ -94,7 +94,7 @@ export function NewClientModal({ isOpen, onClose }: NewClientModalProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
             id="email"
             type="email"
@@ -136,11 +136,11 @@ export function NewClientModal({ isOpen, onClose }: NewClientModalProps) {
           onChange={(e) => setNotes(e.target.value)}
         />
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-secondary/30">
-          <Button type="button" variant="secondary" onClick={handleClose}>
+        <div className="flex justify-end gap-4 pt-8 border-t border-neutral-light">
+          <Button type="button" variant="ghost" onClick={handleClose} className="px-8">
             Cancel
           </Button>
-          <Button type="submit" isLoading={isSubmitting}>
+          <Button type="submit" isLoading={isSubmitting} className="px-8">
             Add Client
           </Button>
         </div>

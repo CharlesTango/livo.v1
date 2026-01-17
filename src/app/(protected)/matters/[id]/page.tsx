@@ -143,10 +143,10 @@ export default function MatterDetailPage() {
     return (
       <>
         <Header title="Matter Not Found" />
-        <div className="flex-1 p-8">
-          <div className="text-center py-12">
-            <p className="text-primary/60 mb-4">This matter could not be found.</p>
-            <Button onClick={() => router.push("/matters")}>
+        <div className="flex-1 p-8 bg-background">
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">This matter could not be found.</p>
+            <Button onClick={() => router.push("/matters")} size="lg">
               Back to Matters
             </Button>
           </div>
@@ -162,17 +162,17 @@ export default function MatterDetailPage() {
         description={client?.name || undefined}
         actions={
           isEditing ? (
-            <div className="flex gap-3">
-              <Button variant="secondary" onClick={cancelEditing}>
+            <div className="flex gap-4">
+              <Button variant="ghost" onClick={cancelEditing} className="px-8">
                 Cancel
               </Button>
-              <Button onClick={saveChanges} isLoading={isSaving}>
+              <Button onClick={saveChanges} isLoading={isSaving} className="px-8">
                 Save Changes
               </Button>
             </div>
           ) : (
-            <div className="flex gap-3">
-              <Button variant="secondary" onClick={startEditing}>
+            <div className="flex gap-4">
+              <Button variant="ghost" onClick={startEditing} className="px-8">
                 <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
@@ -186,15 +186,15 @@ export default function MatterDetailPage() {
       <div className="flex-1 p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-8">
             {/* Description Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Matter Details</CardTitle>
+            <Card className="h-full">
+              <CardHeader className="mb-8">
+                <CardTitle className="text-3xl font-heading font-extrabold">Matter Details</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isEditing ? (
-                  <div className="space-y-5">
+                  <div className="space-y-6">
                     <Input
                       id="title"
                       label="Title"
@@ -206,7 +206,7 @@ export default function MatterDetailPage() {
                       label="Description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="min-h-[150px]"
+                      className="min-h-[200px]"
                     />
                     <Select
                       id="client"
@@ -219,27 +219,27 @@ export default function MatterDetailPage() {
                 ) : (
                   <div>
                     {matter.description ? (
-                      <p className="text-primary/70 whitespace-pre-wrap">{matter.description}</p>
+                      <p className="text-secondary/70 font-body font-medium text-lg leading-relaxed whitespace-pre-wrap">{matter.description}</p>
                     ) : (
-                      <p className="text-primary/40 italic">No description provided.</p>
+                      <p className="text-secondary/40 font-body italic">No description provided.</p>
                     )}
                     
                     {client && (
-                      <div className="mt-6 pt-6 border-t border-secondary/30">
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Client</p>
+                      <div className="mt-10 pt-10 border-t border-neutral-light">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-4">Client Reference</p>
                         <Link
                           href={`/clients/${client._id}`}
-                          className="inline-flex items-center gap-3 p-3 rounded-card border border-secondary/30 hover:border-primary/30 hover:shadow-soft transition-all"
+                          className="inline-flex items-center gap-5 p-5 rounded-m bg-neutral-light/50 border-2 border-transparent hover:border-primary/30 hover:bg-white transition-all duration-300"
                         >
-                          <div className="w-10 h-10 bg-accent/20 rounded-card flex items-center justify-center">
-                            <span className="text-primary font-bold">
+                          <div className="w-12 h-12 bg-primary rounded-m flex items-center justify-center shadow-subtle">
+                            <span className="text-secondary font-heading font-extrabold text-xl">
                               {client.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-bold text-primary">{client.name}</p>
+                            <p className="text-xl font-heading font-extrabold text-secondary">{client.name}</p>
                             {client.company && (
-                              <p className="text-sm text-primary/60">{client.company}</p>
+                              <p className="text-sm font-body font-bold text-secondary/50 uppercase tracking-wider">{client.company}</p>
                             )}
                           </div>
                         </Link>
@@ -252,37 +252,37 @@ export default function MatterDetailPage() {
 
             {/* Notes Card */}
             <Card>
-              <CardHeader>
-                <CardTitle>Notes</CardTitle>
+              <CardHeader className="mb-8">
+                <CardTitle className="text-3xl font-heading font-extrabold">Strategic Notes</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isEditing ? (
                   <Textarea
                     id="notes"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Add notes, key considerations, action items..."
-                    className="min-h-[150px]"
+                    className="min-h-[200px]"
                   />
                 ) : matter.notes ? (
-                  <p className="text-primary/70 whitespace-pre-wrap">{matter.notes}</p>
+                  <p className="text-secondary/70 font-body font-medium leading-relaxed whitespace-pre-wrap">{matter.notes}</p>
                 ) : (
-                  <p className="text-primary/40 italic">No notes added.</p>
+                  <p className="text-secondary/40 font-body italic">No notes added.</p>
                 )}
               </CardContent>
             </Card>
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-8">
             {/* Status Card */}
             <Card>
-              <CardHeader>
-                <CardTitle>Status &amp; Priority</CardTitle>
+              <CardHeader className="mb-8">
+                <CardTitle className="text-2xl font-heading font-extrabold text-secondary">Status &amp; Priority</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isEditing ? (
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <Select
                       id="status"
                       label="Status"
@@ -306,22 +306,22 @@ export default function MatterDetailPage() {
                     />
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Status</p>
-                      <Badge className={matterStatusColors[matter.status] || "bg-secondary"}>
+                  <div className="space-y-6">
+                    <div className="p-4 rounded-m bg-neutral-light/50">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Current Status</p>
+                      <Badge variant="default" className={matterStatusColors[matter.status]}>
                         {matter.status.replace("-", " ")}
                       </Badge>
                     </div>
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Priority</p>
-                      <Badge className={priorityColors[matter.priority] || "bg-secondary"}>
+                    <div className="p-4 rounded-m bg-neutral-light/50">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Priority Level</p>
+                      <Badge variant="default" className={priorityColors[matter.priority]}>
                         {matter.priority}
                       </Badge>
                     </div>
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Type</p>
-                      <span className="text-sm text-primary/70">
+                    <div className="p-4 rounded-m bg-neutral-light/50">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Matter Type</p>
+                      <span className="text-secondary font-body font-bold uppercase tracking-wider">
                         {matter.matterType.replace("-", " ")}
                       </span>
                     </div>
@@ -332,15 +332,15 @@ export default function MatterDetailPage() {
 
             {/* Dates Card */}
             <Card>
-              <CardHeader>
-                <CardTitle>Timeline</CardTitle>
+              <CardHeader className="mb-8">
+                <CardTitle className="text-2xl font-heading font-extrabold text-secondary">Timeline</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {isEditing ? (
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Opened</p>
-                      <p className="text-primary">{formatDate(matter.openDate)}</p>
+                  <div className="space-y-6">
+                    <div className="p-4 rounded-m bg-neutral-light/30">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Date Opened</p>
+                      <p className="text-secondary font-body font-bold">{formatDate(matter.openDate)}</p>
                     </div>
                     <Input
                       id="dueDate"
@@ -351,20 +351,20 @@ export default function MatterDetailPage() {
                     />
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Opened</p>
-                      <p className="text-primary">{formatDate(matter.openDate)}</p>
+                  <div className="space-y-6">
+                    <div className="p-4 rounded-m bg-neutral-light/50">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Date Opened</p>
+                      <p className="text-secondary font-body font-bold">{formatDate(matter.openDate)}</p>
                     </div>
                     {matter.dueDate && (
-                      <div>
-                        <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Due Date</p>
-                        <p className="text-primary">{formatDate(matter.dueDate)}</p>
+                      <div className="p-4 rounded-m bg-primary/10 border-2 border-primary/20">
+                        <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Due Date</p>
+                        <p className="text-secondary font-heading font-extrabold text-lg">{formatDate(matter.dueDate)}</p>
                       </div>
                     )}
-                    <div>
-                      <p className="text-xs text-primary/50 uppercase tracking-wider mb-2">Last Updated</p>
-                      <p className="text-primary/70 text-sm">{formatDate(matter.updatedAt)}</p>
+                    <div className="p-4 rounded-m bg-neutral-light/50">
+                      <p className="text-xs font-bold text-secondary/40 uppercase tracking-widest mb-2">Last Updated</p>
+                      <p className="text-secondary/70 font-body font-medium">{formatDate(matter.updatedAt)}</p>
                     </div>
                   </div>
                 )}
@@ -373,18 +373,16 @@ export default function MatterDetailPage() {
 
             {/* Delete Button (only in edit mode) */}
             {isEditing && (
-              <Card>
-                <CardContent>
-                  <Button
-                    variant="ghost"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 w-full"
-                    onClick={handleDelete}
-                    isLoading={isDeleting}
-                  >
-                    Delete Matter
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="pt-4">
+                <Button
+                  variant="ghost"
+                  className="text-accent-error border-accent-error hover:bg-accent-error hover:text-white w-full py-4"
+                  onClick={handleDelete}
+                  isLoading={isDeleting}
+                >
+                  Delete Matter
+                </Button>
+              </div>
             )}
           </div>
         </div>

@@ -25,15 +25,15 @@ export function formatDateTime(date: number | Date): string {
 }
 
 export const matterStatusColors: Record<string, string> = {
-  open: "bg-accent text-primary",
-  "in-progress": "bg-blue-100 text-blue-800",
-  "pending-review": "bg-yellow-100 text-yellow-800",
-  closed: "bg-secondary text-primary/60",
+  open: "bg-primary/20 text-secondary",
+  "in-progress": "bg-primary-yellow/20 text-secondary",
+  "pending-review": "bg-accent-success/10 text-accent-success",
+  closed: "bg-neutral-medium/20 text-secondary/60",
 };
 
 export const priorityColors: Record<string, string> = {
-  low: "bg-secondary text-primary/60",
-  medium: "bg-blue-100 text-blue-800",
-  high: "bg-orange-100 text-orange-800",
-  urgent: "bg-red-100 text-red-800",
+  low: "bg-neutral-medium/20 text-secondary/60",
+  medium: "bg-primary/20 text-secondary",
+  high: "bg-primary-yellow/20 text-secondary",
+  urgent: "bg-accent-error/10 text-accent-error",
 };

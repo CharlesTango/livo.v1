@@ -43,10 +43,10 @@ export default function ClientsPage() {
 
       <div className="flex-1 p-8">
         {/* Search */}
-        <div className="mb-6">
+        <div className="mb-10">
           <div className="relative max-w-md">
             <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40"
+              className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-secondary/40"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -54,7 +54,7 @@ export default function ClientsPage() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
@@ -63,53 +63,45 @@ export default function ClientsPage() {
               placeholder="Search clients..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12"
+              className="pl-14"
             />
           </div>
         </div>
 
         {/* Clients Grid */}
         {clients === undefined ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="card animate-pulse">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-secondary rounded-card" />
-                  <div className="flex-1">
-                    <div className="h-4 bg-secondary rounded w-3/4 mb-2" />
-                    <div className="h-3 bg-secondary rounded w-1/2" />
-                  </div>
-                </div>
-              </div>
+              <div key={i} className="card animate-pulse h-48 bg-white/50" />
             ))}
           </div>
         ) : filteredClients.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredClients.map((client) => (
               <ClientCard key={client._id} client={client} />
             ))}
           </div>
         ) : clients.length > 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <div className="w-20 h-20 bg-neutral-light rounded-pill flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <p className="text-primary/60 mb-4">No clients found matching &quot;{searchTerm}&quot;</p>
-            <Button variant="secondary" onClick={() => setSearchTerm("")}>
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">No clients found matching &quot;{searchTerm}&quot;</p>
+            <Button variant="secondary" onClick={() => setSearchTerm("")} size="lg">
               Clear Search
             </Button>
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-secondary/30 rounded-card flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">
+            <div className="w-20 h-20 bg-neutral-light rounded-pill flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-secondary/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <p className="text-primary/60 mb-4">No clients yet</p>
-            <Button onClick={() => setShowNewClient(true)}>
+            <p className="text-xl font-heading font-bold text-secondary/60 mb-8">No clients yet</p>
+            <Button onClick={() => setShowNewClient(true)} size="lg">
               Add Your First Client
             </Button>
           </div>

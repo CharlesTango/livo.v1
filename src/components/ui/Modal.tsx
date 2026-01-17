@@ -25,21 +25,21 @@ export function Modal({
     <Fragment>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-primary/30 backdrop-blur-sm z-40"
+        className="fixed inset-0 bg-secondary/40 backdrop-blur-md z-40"
         onClick={onClose}
       />
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
           className={cn(
-            "bg-white rounded-card shadow-large w-full max-w-lg max-h-[90vh] overflow-auto",
+            "bg-white rounded-l shadow-subtle w-full max-w-lg max-h-[90vh] overflow-auto",
             className
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-secondary/30">
-            <h2 className="text-xl font-bold text-primary">{title}</h2>
+          <div className="flex items-center justify-between p-8 border-b border-neutral-light">
+            <h2 className="text-2xl font-heading font-extrabold text-secondary">{title}</h2>
             <Button
               variant="ghost"
               size="sm"
@@ -63,7 +63,7 @@ export function Modal({
             </Button>
           </div>
           {/* Content */}
-          <div className="p-6">{children}</div>
+          <div className="p-8">{children}</div>
         </div>
       </div>
     </Fragment>

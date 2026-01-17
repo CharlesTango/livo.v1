@@ -44,20 +44,20 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-secondary/30 flex flex-col h-screen sticky top-0">
+    <aside className="w-72 bg-white/40 backdrop-blur-xl border-r border-neutral-light/50 flex flex-col h-screen sticky top-0">
       {/* Logo */}
-      <div className="p-6 border-b border-secondary/30">
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-card flex items-center justify-center">
-            <span className="text-white font-serif font-bold text-xl">L</span>
+      <div className="p-8">
+        <Link href="/dashboard" className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary rounded-m flex items-center justify-center shadow-subtle">
+            <span className="text-secondary font-heading font-extrabold text-2xl">L</span>
           </div>
-          <span className="text-2xl font-serif font-bold text-primary">Livo</span>
+          <span className="text-2xl font-heading font-extrabold text-secondary tracking-tight">Livo</span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-1">
+      <nav className="flex-1 px-4">
+        <ul className="space-y-2">
           {navigation.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
@@ -79,15 +79,15 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-secondary/30">
+      <div className="p-6 border-t border-neutral-light/50">
         <button
           onClick={handleSignOut}
-          className="sidebar-link w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+          className="flex items-center gap-3 px-6 py-3 rounded-pill font-body text-accent-error hover:bg-accent-error/10 transition-all duration-200 w-full"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          Sign Out
+          <span className="font-bold">Sign Out</span>
         </button>
       </div>
     </aside>

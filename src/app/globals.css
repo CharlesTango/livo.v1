@@ -1,69 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --ds-bg-gradient: linear-gradient(135deg, #F8F8F8 0%, #E9F3ED 100%);
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Manrope', sans-serif;
+  }
+
   html {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: var(--font-body);
   }
   
   body {
-    @apply bg-neutral text-primary antialiased;
+    @apply bg-background text-secondary antialiased min-h-screen;
+    background: var(--ds-bg-gradient);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-bold text-primary;
+    @apply font-heading font-bold text-secondary;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-white px-6 py-3 rounded-card font-serif font-bold 
-           shadow-soft hover:shadow-medium transition-all duration-200 
-           hover:bg-primary-600 active:bg-primary-700 disabled:opacity-50 
-           disabled:cursor-not-allowed;
+    @apply bg-primary text-secondary px-6 py-3 rounded-pill font-body font-bold 
+           shadow-subtle hover:brightness-95 transition-all duration-200 
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply bg-white text-primary px-6 py-3 rounded-card font-serif 
-           border border-secondary shadow-soft hover:shadow-medium 
-           transition-all duration-200 hover:border-primary 
-           active:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-secondary text-white px-6 py-3 rounded-pill font-body font-bold
+           shadow-subtle hover:brightness-110 transition-all duration-200 
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-accent {
-    @apply bg-accent text-primary px-6 py-3 rounded-card font-serif font-bold 
-           shadow-soft hover:shadow-medium transition-all duration-200 
-           hover:bg-accent-500 active:bg-accent-600 disabled:opacity-50 
-           disabled:cursor-not-allowed;
+    @apply bg-primary-yellow text-secondary px-6 py-3 rounded-pill font-body font-bold 
+           shadow-subtle hover:brightness-95 transition-all duration-200 
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-secondary px-6 py-3 rounded-pill font-body font-bold 
+           border-2 border-secondary hover:bg-secondary hover:text-white transition-all duration-200;
   }
 
   .card {
-    @apply bg-white rounded-card shadow-soft p-6 border border-secondary/30
-           hover:shadow-medium transition-shadow duration-200;
+    @apply bg-white rounded-card shadow-subtle p-8 border-none
+           hover:-translate-y-1 transition-all duration-200;
   }
 
   .input {
-    @apply w-full px-4 py-3 rounded-card border border-secondary 
-           bg-white font-serif text-primary placeholder-secondary-600
-           focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
+    @apply w-full px-5 py-4 rounded-m border-none
+           bg-neutral-light font-body text-secondary placeholder-neutral-medium
+           focus:outline-none focus:ring-2 focus:ring-primary
            transition-all duration-200;
   }
 
   .label {
-    @apply block text-sm font-serif font-bold text-primary mb-2;
+    @apply block text-sm font-body font-bold text-secondary mb-2;
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-card font-serif 
-           text-primary/70 hover:text-primary hover:bg-neutral 
+    @apply flex items-center gap-3 px-6 py-3 rounded-pill font-body 
+           text-secondary/70 hover:text-secondary hover:bg-white/50 
            transition-all duration-200;
   }
 
   .sidebar-link.active {
-    @apply bg-accent/20 text-primary font-bold;
+    @apply bg-secondary text-white font-bold;
+  }
+
+  .badge {
+    @apply px-4 py-1.5 rounded-pill font-body text-xs font-bold inline-block;
+  }
+
+  .badge-primary {
+    @apply bg-primary text-secondary;
+  }
+
+  .badge-dark {
+    @apply bg-secondary text-white;
+  }
+
+  .progress-bar {
+    @apply h-5 bg-neutral-light rounded-pill overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-primary rounded-pill;
+  }
+
+  .progress-patterned {
+    background: repeating-linear-gradient(45deg, #E0E0E0, #E0E0E0 10px, #F5F5F5 10px, #F5F5F5 20px);
   }
 }
 
