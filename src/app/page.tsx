@@ -122,8 +122,13 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-secondary/30 py-8">
-        <div className="max-w-6xl mx-auto px-6 text-center text-primary/50 text-sm">
-          © 2026 Livo. Legal Practice Management.
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-primary/50 text-sm">
+          <div>© 2026 Livo. Legal Practice Management.</div>
+          <div className="flex items-center gap-6">
+            <Link href="/design-system" className="hover:text-primary transition-colors">
+              Style Guide
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
