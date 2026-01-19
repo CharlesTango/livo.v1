@@ -4,11 +4,18 @@ import { useConvexAuth } from "convex/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
+import * as UIComponents from "@/components/ui";
 
 export default function HomePage() {
+// #region agent log
+fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/app/page.tsx:12',message:'Checking UIComponents',data:{availableComponents:Object.keys(UIComponents),hasCard:!!(UIComponents as any).Card},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
+// #endregion
   const { isAuthenticated, isLoading } = useConvexAuth();
 
+// #region agent log
+fetch('http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/app/page.tsx:9',message:'HomePage entry',data:{isAuthenticated,isLoading,typeofCard:typeof (globalThis as any).Card},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'A'})}).catch(()=>{});
+// #endregion
   useEffect(() => {
     if (isAuthenticated) {
       redirect("/dashboard");
