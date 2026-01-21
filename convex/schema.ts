@@ -14,6 +14,19 @@ export default defineSchema({
     isAnonymous: v.optional(v.boolean()),
   }).index("email", ["email"]),
 
+  // Microsoft OAuth tokens for OneDrive integration
+  microsoftTokens: defineTable({
+    userId: v.id("users"),
+    accessToken: v.string(),
+    refreshToken: v.string(),
+    expiresAt: v.number(),
+    scope: v.string(),
+    // User's chosen root folder for matter storage
+    rootFolderId: v.optional(v.string()),
+    rootFolderPath: v.optional(v.string()),
+    rootFolderName: v.optional(v.string()),
+  }).index("by_user", ["userId"]),
+
   // Clients table
   clients: defineTable({
     userId: v.id("users"),
@@ -42,6 +55,10 @@ export default defineSchema({
     openDate: v.number(),
     dueDate: v.optional(v.number()),
     notes: v.optional(v.string()),
+    // OneDrive integration fields
+    onedriveFolderId: v.optional(v.string()),
+    onedriveFolderUrl: v.optional(v.string()),
+    onedriveFolderName: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

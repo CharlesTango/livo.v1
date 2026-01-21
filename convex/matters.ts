@@ -1,6 +1,8 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
+import { internal, api } from "./_generated/api";
 import { auth } from "./auth";
+import { Id } from "./_generated/dataModel";
 
 // Get all matters for the current user
 export const list = query({
@@ -123,7 +125,48 @@ export const stats = query({
   },
 });
 
-// Create a new matter
+// Internal mutation to create a matter (used by actions)
+export const createInternal = internalMutation({
+  args: {
+    userId: v.id("users"),
+    clientId: v.id("clients"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    matterType: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    openDate: v.number(),
+    dueDate: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<{ matterId: Id<"matters">; clientName: string }> => {
+    // Verify client belongs to user
+    const client = await ctx.db.get(args.clientId);
+    if (!client || client.userId !== args.userId) {
+      throw new Error("Client not found");
+    }
+    
+    const now = Date.now();
+    const matterId = await ctx.db.insert("matters", {
+      userId: args.userId,
+      clientId: args.clientId,
+      title: args.title,
+      description: args.description,
+      matterType: args.matterType,
+      status: args.status,
+      priority: args.priority,
+      openDate: args.openDate,
+      dueDate: args.dueDate,
+      notes: args.notes,
+      createdAt: now,
+      updatedAt: now,
+    });
+    
+    return { matterId, clientName: client.name };
+  },
+});
+
+// Create a new matter (simple mutation for when OneDrive isn't needed)
 export const create = mutation({
   args: {
     clientId: v.id("clients"),
@@ -161,6 +204,64 @@ export const create = mutation({
       createdAt: now,
       updatedAt: now,
     });
+  },
+});
+
+// Action to create a matter with OneDrive folder
+export const createWithOneDrive = action({
+  args: {
+    clientId: v.id("clients"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    matterType: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    openDate: v.number(),
+    dueDate: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<Id<"matters">> => {
+    // Get user ID from auth
+    const userId = await ctx.runQuery(internal.users.getUserIdInternal, {});
+    if (!userId) throw new Error("Not authenticated");
+    
+    // First create the matter
+    const result = await ctx.runMutation(internal.matters.createInternal, {
+      userId,
+      clientId: args.clientId,
+      title: args.title,
+      description: args.description,
+      matterType: args.matterType,
+      status: args.status,
+      priority: args.priority,
+      openDate: args.openDate,
+      dueDate: args.dueDate,
+      notes: args.notes,
+    });
+    
+    // Try to create OneDrive folder (don't fail if this doesn't work)
+    try {
+      const folder = await ctx.runAction(internal.microsoft.createMatterFolder, {
+        userId,
+        clientName: result.clientName,
+        matterTitle: args.title,
+      });
+      
+      if (folder) {
+        // Update the matter with folder info
+        await ctx.runMutation(internal.microsoft.updateMatterWithFolder, {
+          matterId: result.matterId,
+          folderId: folder.folderId,
+          folderUrl: folder.folderUrl,
+          folderName: folder.folderName,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create OneDrive folder:", error);
+      // Don't throw - matter was still created successfully
+    }
+    
+    return result.matterId;
   },
 });
 
@@ -241,5 +342,155 @@ export const search = query({
         matter.title.toLowerCase().includes(term) ||
         matter.description?.toLowerCase().includes(term)
     );
+  },
+});
+
+// Internal mutation to create a new client and matter together
+export const createWithNewClientInternal = internalMutation({
+  args: {
+    userId: v.id("users"),
+    clientName: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    matterType: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    openDate: v.number(),
+    dueDate: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<{ matterId: Id<"matters">; clientId: Id<"clients">; clientName: string }> => {
+    const now = Date.now();
+    
+    // First, create the new client
+    const clientId = await ctx.db.insert("clients", {
+      userId: args.userId,
+      name: args.clientName,
+      createdAt: now,
+      updatedAt: now,
+    });
+    
+    // Then, create the matter with the new client
+    const matterId = await ctx.db.insert("matters", {
+      userId: args.userId,
+      clientId,
+      title: args.title,
+      description: args.description,
+      matterType: args.matterType,
+      status: args.status,
+      priority: args.priority,
+      openDate: args.openDate,
+      dueDate: args.dueDate,
+      notes: args.notes,
+      createdAt: now,
+      updatedAt: now,
+    });
+    
+    return { matterId, clientId, clientName: args.clientName };
+  },
+});
+
+// Create a new matter with a new client (when client doesn't exist)
+export const createWithNewClient = mutation({
+  args: {
+    clientName: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    matterType: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    openDate: v.number(),
+    dueDate: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+    
+    const now = Date.now();
+    
+    // First, create the new client
+    const clientId = await ctx.db.insert("clients", {
+      userId,
+      name: args.clientName,
+      createdAt: now,
+      updatedAt: now,
+    });
+    
+    // Then, create the matter with the new client
+    const matterId = await ctx.db.insert("matters", {
+      userId,
+      clientId,
+      title: args.title,
+      description: args.description,
+      matterType: args.matterType,
+      status: args.status,
+      priority: args.priority,
+      openDate: args.openDate,
+      dueDate: args.dueDate,
+      notes: args.notes,
+      createdAt: now,
+      updatedAt: now,
+    });
+    
+    return { matterId, clientId };
+  },
+});
+
+// Action to create a matter with a new client and OneDrive folder
+export const createWithNewClientAndOneDrive = action({
+  args: {
+    clientName: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    matterType: v.string(),
+    status: v.string(),
+    priority: v.string(),
+    openDate: v.number(),
+    dueDate: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args): Promise<{ matterId: Id<"matters">; clientId: Id<"clients"> }> => {
+    // Get user ID from auth
+    const userId = await ctx.runQuery(internal.users.getUserIdInternal, {});
+    if (!userId) throw new Error("Not authenticated");
+    
+    // First create the client and matter
+    const result = await ctx.runMutation(internal.matters.createWithNewClientInternal, {
+      userId,
+      clientName: args.clientName,
+      title: args.title,
+      description: args.description,
+      matterType: args.matterType,
+      status: args.status,
+      priority: args.priority,
+      openDate: args.openDate,
+      dueDate: args.dueDate,
+      notes: args.notes,
+    });
+    
+    // Try to create OneDrive folder (don't fail if this doesn't work)
+    try {
+      const folder = await ctx.runAction(internal.microsoft.createMatterFolder, {
+        userId,
+        clientName: result.clientName,
+        matterTitle: args.title,
+      });
+      
+      if (folder) {
+        // Update the matter with folder info
+        await ctx.runMutation(internal.microsoft.updateMatterWithFolder, {
+          matterId: result.matterId,
+          folderId: folder.folderId,
+          folderUrl: folder.folderUrl,
+          folderName: folder.folderName,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create OneDrive folder:", error);
+      // Don't throw - matter was still created successfully
+    }
+    
+    return { matterId: result.matterId, clientId: result.clientId };
   },
 });

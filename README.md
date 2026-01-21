@@ -101,6 +101,58 @@ convex/
 - Soft shadows for depth
 - Consistent spacing and padding
 
+## OneDrive Integration
+
+Livo supports connecting to Microsoft OneDrive to store matter documents. Each matter can have an associated OneDrive folder that is automatically created when the matter is created.
+
+### Azure App Registration Setup
+
+To enable OneDrive integration, you need to register an application in Microsoft Azure:
+
+1. **Go to Azure Portal**: Navigate to [Azure Portal](https://portal.azure.com) and sign in with your Microsoft account.
+
+2. **Create App Registration**:
+   - Go to "Azure Active Directory" > "App registrations" > "New registration"
+   - Name: "Livo - Legal Matter Management" (or your preferred name)
+   - Supported account types: Select "Accounts in any organizational directory and personal Microsoft accounts"
+   - Redirect URI: Select "Web" and enter: `{YOUR_CONVEX_DEPLOYMENT_URL}/api/auth/microsoft/callback`
+     - Example: `https://your-project.convex.site/api/auth/microsoft/callback`
+
+3. **Configure API Permissions**:
+   - Go to "API permissions" > "Add a permission" > "Microsoft Graph"
+   - Select "Delegated permissions" and add:
+     - `Files.ReadWrite` - Read and write access to user files
+     - `offline_access` - Maintain access to data (for refresh tokens)
+   - Click "Grant admin consent" if you have admin privileges (optional, users will consent individually otherwise)
+
+4. **Create Client Secret**:
+   - Go to "Certificates & secrets" > "New client secret"
+   - Description: "Livo Production" (or similar)
+   - Expiration: Choose based on your security requirements (recommended: 24 months)
+   - Copy the secret value immediately (it won't be shown again)
+
+5. **Configure Convex Environment Variables**:
+   ```bash
+   npx convex env set MICROSOFT_CLIENT_ID "your-application-client-id"
+   npx convex env set MICROSOFT_CLIENT_SECRET "your-client-secret-value"
+   npx convex env set CONVEX_SITE_URL "https://your-project.convex.site"
+   ```
+
+   You can find your Application (client) ID on the app registration overview page.
+
+6. **Configure Next.js Environment Variables**:
+   Add to your `.env.local`:
+   ```
+   NEXT_PUBLIC_CONVEX_SITE_URL=https://your-project.convex.site
+   ```
+
+### How It Works
+
+- Users connect their OneDrive account from their Profile page
+- When creating a new matter, a folder is automatically created in OneDrive under `Livo Matters/{Client Name} - {Matter Title}`
+- Click the "Documents" folder in any matter to open the OneDrive folder in a new tab
+- Users can disconnect their OneDrive at any time from their Profile
+
 ## License
 
 MIT

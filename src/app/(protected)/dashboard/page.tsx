@@ -46,17 +46,17 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
           <Card>
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Total Matters</p>
-                  <p className="text-4xl font-heading font-extrabold text-secondary mt-2">
+              <div>
+                <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider whitespace-nowrap">Total Matters</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-4xl font-heading font-extrabold text-secondary">
                     {stats?.total ?? 0}
                   </p>
-                </div>
-                <div className="w-14 h-14 bg-primary rounded-m flex items-center justify-center shadow-subtle">
-                  <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+                  <div className="w-14 h-14 bg-white rounded-m flex items-center justify-center shadow-subtle">
+                    <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -64,17 +64,17 @@ export default function DashboardPage() {
 
           <Card>
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Open</p>
-                  <p className="text-4xl font-heading font-extrabold text-secondary mt-2">
+              <div>
+                <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Open</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-4xl font-heading font-extrabold text-secondary">
                     {stats?.open ?? 0}
                   </p>
-                </div>
-                <div className="w-14 h-14 bg-primary-yellow rounded-m flex items-center justify-center shadow-subtle">
-                  <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
+                  <div className="w-14 h-14 bg-white rounded-m flex items-center justify-center shadow-subtle">
+                    <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -82,17 +82,17 @@ export default function DashboardPage() {
 
           <Card>
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">In Progress</p>
-                  <p className="text-4xl font-heading font-extrabold text-secondary mt-2">
+              <div>
+                <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">In Progress</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-4xl font-heading font-extrabold text-secondary">
                     {stats?.inProgress ?? 0}
                   </p>
-                </div>
-                <div className="w-14 h-14 bg-secondary rounded-m flex items-center justify-center shadow-subtle">
-                  <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+                  <div className="w-14 h-14 bg-white rounded-m flex items-center justify-center shadow-subtle">
+                    <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -100,17 +100,17 @@ export default function DashboardPage() {
 
           <Card>
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Pending</p>
-                  <p className="text-4xl font-heading font-extrabold text-secondary mt-2">
+              <div>
+                <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Pending</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-4xl font-heading font-extrabold text-secondary">
                     {stats?.pendingReview ?? 0}
                   </p>
-                </div>
-                <div className="w-14 h-14 bg-neutral-light rounded-m flex items-center justify-center shadow-subtle border-2 border-neutral-medium/20">
-                  <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <div className="w-14 h-14 bg-white rounded-m flex items-center justify-center shadow-subtle">
+                    <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -118,17 +118,17 @@ export default function DashboardPage() {
 
           <Card>
             <CardContent className="p-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Clients</p>
-                  <p className="text-4xl font-heading font-extrabold text-secondary mt-2">
+              <div>
+                <p className="text-sm font-bold text-secondary/50 uppercase tracking-wider">Clients</p>
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-4xl font-heading font-extrabold text-secondary">
                     {clients?.length ?? 0}
                   </p>
-                </div>
-                <div className="w-14 h-14 bg-accent-soft rounded-m flex items-center justify-center shadow-subtle">
-                  <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+                  <div className="w-14 h-14 bg-white rounded-m flex items-center justify-center shadow-subtle">
+                    <svg className="w-7 h-7 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </CardContent>

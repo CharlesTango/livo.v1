@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Header } from "@/components/layout";
 import { Card, CardHeader, CardTitle, CardContent, Input, Button } from "@/components/ui";
+import { ConnectOneDrive } from "@/components/onedrive";
 
 export default function ProfilePage() {
   const user = useQuery(api.users.current);
@@ -153,6 +154,16 @@ export default function ProfilePage() {
                   )}
                 </div>
               </form>
+            </CardContent>
+          </Card>
+
+          {/* Connected Services */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Connected Services</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ConnectOneDrive />
             </CardContent>
           </Card>
 

@@ -1,11 +1,13 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Header } from "@/components/layout";
-import { Button, Input, Select } from "@/components/ui";
-import { MatterCard, NewMatterModal } from "@/components/matters";
+import { Button, Input, Select, Badge } from "@/components/ui";
+import { NewMatterModal } from "@/components/matters";
 import { useState, useMemo } from "react";
+import { formatDate, matterStatusColors, priorityColors } from "@/lib/utils";
 
 const statusOptions = [
   { value: "", label: "All Statuses" },
@@ -26,6 +28,7 @@ const priorityOptions = [
 export default function MattersPage() {
   const matters = useQuery(api.matters.list, {});
   const clients = useQuery(api.clients.list);
+  const router = useRouter();
   
   const [showNewMatter, setShowNewMatter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,6 +72,10 @@ export default function MattersPage() {
   };
 
   const hasFilters = searchTerm || statusFilter || priorityFilter;
+
+  const handleRowClick = (matterId: string) => {
+    router.push(`/matters/${matterId}`);
+  };
 
   return (
     <>
@@ -138,22 +145,88 @@ export default function MattersPage() {
           )}
         </div>
 
-        {/* Matters Grid */}
+        {/* Matters Table */}
         {matters === undefined ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="card animate-pulse h-64 bg-white/50" />
-            ))}
+          <div className="bg-white rounded-l shadow-subtle overflow-hidden">
+            <div className="animate-pulse">
+              <div className="h-14 bg-neutral-light/50 border-b border-neutral-light" />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-16 border-b border-neutral-light/50 bg-white/50" />
+              ))}
+            </div>
           </div>
         ) : filteredMatters.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {filteredMatters.map((matter) => (
-              <MatterCard
-                key={matter._id}
-                matter={matter}
-                clientName={clientMap[matter.clientId]}
-              />
-            ))}
+          <div className="bg-white rounded-l shadow-subtle overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-neutral-light/50 border-b border-neutral-light">
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Matter</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Client</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Type</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Priority</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Opened</th>
+                    <th className="text-left px-6 py-4 text-xs font-bold text-secondary/60 uppercase tracking-wider">Due Date</th>
+                    <th className="w-12"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredMatters.map((matter) => (
+                    <tr
+                      key={matter._id}
+                      onClick={() => handleRowClick(matter._id)}
+                      className="border-b border-neutral-light/50 hover:bg-primary/5 cursor-pointer transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-primary rounded-m flex items-center justify-center shrink-0 shadow-subtle">
+                            <svg className="w-5 h-5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-heading font-bold text-secondary truncate max-w-[200px]">{matter.title}</p>
+                            {matter.description && (
+                              <p className="text-xs text-secondary/50 truncate max-w-[200px]">{matter.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-medium text-secondary/70">{clientMap[matter.clientId] || "—"}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-bold bg-neutral-light text-secondary/60 px-3 py-1.5 rounded-pill uppercase tracking-wider whitespace-nowrap">
+                          {matter.matterType.replace("-", " ")}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="default" className={matterStatusColors[matter.status]}>
+                          {matter.status.replace("-", " ")}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant="default" className={priorityColors[matter.priority]}>
+                          {matter.priority}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-secondary/60">{formatDate(matter.openDate)}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-secondary/60">{matter.dueDate ? formatDate(matter.dueDate) : "—"}</span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <svg className="w-5 h-5 text-secondary/20 group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : matters.length > 0 ? (
           <div className="text-center py-20 bg-white/40 rounded-l shadow-subtle">

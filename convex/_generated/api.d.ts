@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as clients from "../clients.js";
 import type * as http from "../http.js";
 import type * as matters from "../matters.js";
+import type * as microsoft from "../microsoft.js";
 import type * as users from "../users.js";
 
 import type {
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   clients: typeof clients;
   http: typeof http;
   matters: typeof matters;
+  microsoft: typeof microsoft;
   users: typeof users;
 }>;
 
