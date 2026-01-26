@@ -8,7 +8,10 @@
     "dev:backend": "convex dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "addin:install": "cd outlook-addin && npm install",
+    "addin:dev": "cd outlook-addin && npm run dev",
+    "addin:build": "cd outlook-addin && npm run build"
   },
   "dependencies": {
     "@auth/core": "0.37.4",
