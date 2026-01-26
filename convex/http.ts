@@ -2,6 +2,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { auth } from "./auth";
+import { Id } from "./_generated/dataModel";
 
 const http = httpRouter();
 
@@ -44,10 +45,22 @@ http.route({
     }
 
     // Parse state to get userId
-    let userId: string;
+    let userId: Id<"users">;
     try {
-      const stateData = JSON.parse(atob(state));
-      userId = stateData.userId;
+      const stateData: unknown = JSON.parse(atob(state));
+      const maybeUserId =
+        typeof stateData === "object" && stateData !== null && "userId" in stateData
+          ? (stateData as any).userId
+          : undefined;
+      if (typeof maybeUserId !== "string" || maybeUserId.length === 0) {
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: `${frontendUrl}/profile?onedrive_error=invalid_state`,
+          },
+        });
+      }
+      userId = maybeUserId as Id<"users">;
     } catch {
       return new Response(null, {
         status: 302,
@@ -68,7 +81,7 @@ http.route({
 
       // Store tokens in database
       await ctx.runMutation(internal.microsoft.storeTokensInternal, {
-        userId: userId as any,
+        userId,
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
         expiresAt: Date.now() + tokens.expiresIn * 1000,

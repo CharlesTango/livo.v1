@@ -4,7 +4,7 @@ import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Modal, Button, Input, Textarea, Select, Autocomplete } from "@/components/ui";
 import type { AutocompleteOption } from "@/components/ui";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Id } from "../../../convex/_generated/dataModel";
 import Link from "next/link";
 
@@ -81,14 +81,12 @@ export function NewMatterModal({ isOpen, onClose, preselectedClientId }: NewMatt
   }, [clients]);
 
   // Set initial client name if preselected
-  useMemo(() => {
-    if (preselectedClientId && clients) {
-      const preselectedClient = clients.find(c => c._id === preselectedClientId);
-      if (preselectedClient) {
-        setClientName(preselectedClient.name);
-        setClientId(preselectedClientId);
-      }
-    }
+  useEffect(() => {
+    if (!preselectedClientId || !clients) return;
+    const preselectedClient = clients.find((c) => c._id === preselectedClientId);
+    if (!preselectedClient) return;
+    setClientName(preselectedClient.name);
+    setClientId(preselectedClientId);
   }, [preselectedClientId, clients]);
 
   // Check if client name matches an existing client exactly
