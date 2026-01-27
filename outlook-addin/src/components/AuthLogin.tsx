@@ -37,7 +37,11 @@ export function AuthLogin({ onSuccess }: AuthLoginProps) {
       {/* Header */}
       <div className="auth-header">
         <div className="logo-container">
-          <span className="logo-text">L</span>
+          <img 
+            src="/assets/livo-logo-medium.png" 
+            alt="Livo" 
+            className="logo-image"
+          />
         </div>
         <h1 className="auth-title">Sign in to Livo</h1>
         <p className="auth-subtitle">

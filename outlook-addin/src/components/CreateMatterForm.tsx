@@ -3,31 +3,6 @@ import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 
-const matterTypes = [
-  { value: "contract", label: "Contract" },
-  { value: "litigation", label: "Litigation" },
-  { value: "advisory", label: "Advisory" },
-  { value: "compliance", label: "Compliance" },
-  { value: "corporate", label: "Corporate" },
-  { value: "employment", label: "Employment" },
-  { value: "intellectual-property", label: "Intellectual Property" },
-  { value: "real-estate", label: "Real Estate" },
-  { value: "other", label: "Other" },
-];
-
-const statusOptions = [
-  { value: "open", label: "Open" },
-  { value: "in-progress", label: "In Progress" },
-  { value: "pending-review", label: "Pending Review" },
-  { value: "closed", label: "Closed" },
-];
-
-const priorityOptions = [
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
-  { value: "urgent", label: "Urgent" },
-];
 
 type FormStep = "form" | "confirm-new-client" | "success";
 
@@ -53,11 +28,7 @@ export function CreateMatterForm() {
   const [clientId, setClientId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [matterType, setMatterType] = useState("contract");
-  const [status, setStatus] = useState("open");
-  const [priority, setPriority] = useState("medium");
   const [dueDate, setDueDate] = useState("");
-  const [notes, setNotes] = useState("");
 
   // UI state
   const [step, setStep] = useState<FormStep>("form");
@@ -133,24 +104,22 @@ export function CreateMatterForm() {
             clientId: finalClientId as Id<"clients">,
             title,
             description: description || undefined,
-            matterType,
-            status,
-            priority,
+            matterType: "contract",
+            status: "open",
+            priority: "medium",
             openDate: Date.now(),
             dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
-            notes: notes || undefined,
           });
         } else {
           await createMatter({
             clientId: finalClientId as Id<"clients">,
             title,
             description: description || undefined,
-            matterType,
-            status,
-            priority,
+            matterType: "contract",
+            status: "open",
+            priority: "medium",
             openDate: Date.now(),
             dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
-            notes: notes || undefined,
           });
         }
       } else {
@@ -160,24 +129,22 @@ export function CreateMatterForm() {
             clientName: clientName.trim(),
             title,
             description: description || undefined,
-            matterType,
-            status,
-            priority,
+            matterType: "contract",
+            status: "open",
+            priority: "medium",
             openDate: Date.now(),
             dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
-            notes: notes || undefined,
           });
         } else {
           await createMatterWithNewClient({
             clientName: clientName.trim(),
             title,
             description: description || undefined,
-            matterType,
-            status,
-            priority,
+            matterType: "contract",
+            status: "open",
+            priority: "medium",
             openDate: Date.now(),
             dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
-            notes: notes || undefined,
           });
         }
       }
@@ -197,11 +164,7 @@ export function CreateMatterForm() {
     setClientId(null);
     setTitle("");
     setDescription("");
-    setMatterType("contract");
-    setStatus("open");
-    setPriority("medium");
     setDueDate("");
-    setNotes("");
     setError("");
     setStep("form");
   };
@@ -265,12 +228,6 @@ export function CreateMatterForm() {
   // Main form
   return (
     <div className="form-container">
-      {/* Header */}
-      <div className="form-header">
-        <div className="logo-small">L</div>
-        <h1 className="form-title">Create New Matter</h1>
-      </div>
-
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
 
@@ -351,57 +308,6 @@ export function CreateMatterForm() {
           />
         </div>
 
-        {/* Matter Type, Status, Priority - Single column for task pane */}
-        <div className="form-group">
-          <label htmlFor="matterType" className="label">Matter Type</label>
-          <select
-            id="matterType"
-            className="input select"
-            value={matterType}
-            onChange={(e) => setMatterType(e.target.value)}
-          >
-            {matterTypes.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="form-row">
-          <div className="form-group half">
-            <label htmlFor="status" className="label">Status</label>
-            <select
-              id="status"
-              className="input select"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              {statusOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group half">
-            <label htmlFor="priority" className="label">Priority</label>
-            <select
-              id="priority"
-              className="input select"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-            >
-              {priorityOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
         {/* Due Date */}
         <div className="form-group">
           <label htmlFor="dueDate" className="label">Due Date</label>
@@ -411,19 +317,6 @@ export function CreateMatterForm() {
             className="input"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-          />
-        </div>
-
-        {/* Notes */}
-        <div className="form-group">
-          <label htmlFor="notes" className="label">Notes</label>
-          <textarea
-            id="notes"
-            className="input textarea"
-            placeholder="Additional notes, key considerations..."
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
           />
         </div>
 

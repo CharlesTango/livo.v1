@@ -128,22 +128,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo-container {
-  width: 56px;
+  width: auto;
   height: 56px;
-  background: var(--color-primary);
-  border-radius: var(--radius-m);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto var(--spacing-md);
-  box-shadow: var(--shadow-subtle);
 }
 
-.logo-text {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 28px;
-  color: var(--color-secondary);
+.logo-image {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
 }
 
 .auth-title {
@@ -178,18 +174,10 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 1px solid var(--color-neutral-light);
 }
 
-.logo-small {
-  width: 36px;
+.logo-small-image {
   height: 36px;
-  background: var(--color-primary);
-  border-radius: var(--radius-s);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--color-secondary);
+  width: auto;
+  object-fit: contain;
 }
 
 .form-title {
@@ -439,9 +427,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* OneDrive Status */
 .onedrive-status {
-  padding-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
   border-top: 1px solid var(--color-neutral-light);
-  margin-top: var(--spacing-sm);
 }
 
 .onedrive-connected,

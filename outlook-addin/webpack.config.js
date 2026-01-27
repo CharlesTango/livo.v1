@@ -86,9 +86,73 @@ module.exports = (env, argv) => {
       },
       headers: {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Private-Network": "true",
       },
       hot: true,
       allowedHosts: "all",
+      setupMiddlewares: (middlewares, devServer) => {
+        if (devServer && devServer.app) {
+          devServer.app.use((req, res, next) => {
+            const url = req.url || "";
+            if (url.includes("/assets/icon-64.png") || url.includes("/assets/icon-128.png")) {
+              // #region agent log
+              fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sessionId: "debug-session",
+                  runId: "pre-fix",
+                  hypothesisId: "H4",
+                  location: "webpack.config.js:92",
+                  message: "Icon request received by dev server",
+                  data: {
+                    url,
+                    method: req.method,
+                    origin: req.headers.origin,
+                    referer: req.headers.referer,
+                    host: req.headers.host,
+                    secFetchSite: req.headers["sec-fetch-site"],
+                    acRequestPrivateNetwork: req.headers["access-control-request-private-network"],
+                    userAgent: req.headers["user-agent"],
+                  },
+                  timestamp: Date.now(),
+                }),
+              }).catch(() => {});
+              // #endregion agent log
+
+              if (req.method === "OPTIONS") {
+                // #region agent log
+                fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    sessionId: "debug-session",
+                    runId: "pre-fix",
+                    hypothesisId: "H5",
+                    location: "webpack.config.js:108",
+                    message: "Icon preflight handled",
+                    data: {
+                      url,
+                      origin: req.headers.origin,
+                      acRequestPrivateNetwork: req.headers["access-control-request-private-network"],
+                    },
+                    timestamp: Date.now(),
+                  }),
+                }).catch(() => {});
+                // #endregion agent log
+
+                res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+                res.setHeader("Access-Control-Allow-Private-Network", "true");
+                res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+                res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+                return res.status(204).end();
+              }
+            }
+            next();
+          });
+        }
+        return middlewares;
+      },
     },
     devtool: isProduction ? "source-map" : "eval-source-map",
   };
