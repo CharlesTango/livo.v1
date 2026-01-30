@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useConvexAuth } from "convex/react";
 import { ConvexClientProvider } from "./lib/convex";
 import { AuthLogin } from "./components/AuthLogin";
 import { CreateMatterForm } from "./components/CreateMatterForm";
+import { AddToMatterForm } from "./components/AddToMatterForm";
+import { MainMenu } from "./components/MainMenu";
+
+type ViewType = "menu" | "create-matter" | "add-to-matter";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const [currentView, setCurrentView] = useState<ViewType>("menu");
 
   useEffect(() => {
     const runId = "pre-fix";
@@ -114,8 +119,19 @@ function AppContent() {
     return <AuthLogin />;
   }
 
-  // Authenticated - show matter creation form
-  return <CreateMatterForm />;
+  // Authenticated - render based on current view
+  const handleBackToMenu = () => setCurrentView("menu");
+
+  if (currentView === "create-matter") {
+    return <CreateMatterForm onBack={handleBackToMenu} />;
+  }
+
+  if (currentView === "add-to-matter") {
+    return <AddToMatterForm onBack={handleBackToMenu} />;
+  }
+
+  // Default: show main menu
+  return <MainMenu onSelectView={setCurrentView} />;
 }
 
 export function App() {

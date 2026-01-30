@@ -678,3 +678,219 @@ export const createNewFolder = action({
     });
   },
 });
+
+// Internal query to get matter by ID for upload action
+export const getMatterForUpload = internalQuery({
+  args: { matterId: v.id("matters"), userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const matter = await ctx.db.get(args.matterId);
+    if (!matter || matter.userId !== args.userId) {
+      return null;
+    }
+    return matter;
+  },
+});
+
+// Helper function to generate EML file content
+function generateEmlContent(emailData: {
+  subject: string;
+  from: string;
+  to: string;
+  date: string;
+  body: string;
+  bodyType: string;
+}): string {
+  const boundary = `----=_Part_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const isHtml = emailData.bodyType === "html";
+  
+  // Format date for email header (RFC 2822)
+  const emailDate = new Date(emailData.date).toUTCString();
+  
+  // Build EML content
+  let eml = `From: ${emailData.from}\r\n`;
+  eml += `To: ${emailData.to}\r\n`;
+  eml += `Subject: ${emailData.subject}\r\n`;
+  eml += `Date: ${emailDate}\r\n`;
+  eml += `MIME-Version: 1.0\r\n`;
+  
+  if (isHtml) {
+    eml += `Content-Type: multipart/alternative; boundary="${boundary}"\r\n`;
+    eml += `\r\n`;
+    eml += `--${boundary}\r\n`;
+    eml += `Content-Type: text/plain; charset="UTF-8"\r\n`;
+    eml += `Content-Transfer-Encoding: quoted-printable\r\n`;
+    eml += `\r\n`;
+    // Simple HTML to text conversion (strip tags)
+    const textBody = emailData.body.replace(/<[^>]*>/g, '').trim();
+    eml += `${textBody}\r\n`;
+    eml += `\r\n`;
+    eml += `--${boundary}\r\n`;
+    eml += `Content-Type: text/html; charset="UTF-8"\r\n`;
+    eml += `Content-Transfer-Encoding: quoted-printable\r\n`;
+    eml += `\r\n`;
+    eml += `${emailData.body}\r\n`;
+    eml += `\r\n`;
+    eml += `--${boundary}--\r\n`;
+  } else {
+    eml += `Content-Type: text/plain; charset="UTF-8"\r\n`;
+    eml += `Content-Transfer-Encoding: quoted-printable\r\n`;
+    eml += `\r\n`;
+    eml += `${emailData.body}\r\n`;
+  }
+  
+  return eml;
+}
+
+// Sanitize filename for OneDrive
+function sanitizeFilename(name: string): string {
+  // Remove or replace invalid characters
+  return name
+    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\s+/g, '_')
+    .substring(0, 200); // Limit filename length
+}
+
+// Public action to upload email to a matter's OneDrive folder
+export const uploadEmailToMatter = action({
+  args: {
+    matterId: v.id("matters"),
+    emailData: v.object({
+      subject: v.string(),
+      from: v.string(),
+      to: v.string(),
+      date: v.string(),
+      body: v.string(),
+      bodyType: v.string(),
+    }),
+    attachments: v.optional(v.array(v.object({
+      name: v.string(),
+      contentType: v.string(),
+      contentBase64: v.string(),
+    }))),
+  },
+  handler: async (ctx, args): Promise<{ success: boolean; filesUploaded: number }> => {
+    // Get authenticated user
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const userId = await ctx.runQuery(internal.users.getUserIdInternal, {});
+    if (!userId) throw new Error("User not found");
+
+    // Get the matter and verify ownership
+    const matter = await ctx.runQuery(internal.microsoft.getMatterForUpload, {
+      matterId: args.matterId,
+      userId,
+    });
+
+    if (!matter) {
+      throw new Error("Matter not found or access denied");
+    }
+
+    if (!matter.onedriveFolderId) {
+      throw new Error("Matter does not have a OneDrive folder configured");
+    }
+
+    // Get user's OneDrive tokens
+    const tokens = await ctx.runQuery(internal.microsoft.getTokensInternal, {
+      userId,
+    });
+
+    if (!tokens) {
+      throw new Error("OneDrive is not connected");
+    }
+
+    // Get valid access token
+    let accessToken = tokens.accessToken;
+    
+    // Refresh if expires in less than 5 minutes
+    if (tokens.expiresAt < Date.now() + 5 * 60 * 1000) {
+      try {
+        const refreshed = await ctx.runAction(internal.microsoft.refreshAccessToken, {
+          refreshToken: tokens.refreshToken,
+        });
+        accessToken = refreshed.accessToken;
+        
+        await ctx.runMutation(internal.microsoft.updateAccessTokenInternal, {
+          tokenId: tokens._id,
+          accessToken: refreshed.accessToken,
+          expiresAt: Date.now() + refreshed.expiresIn * 1000,
+        });
+      } catch (error) {
+        console.error("Failed to refresh token:", error);
+        throw new Error("Failed to refresh OneDrive access token");
+      }
+    }
+
+    const folderId = matter.onedriveFolderId;
+    let filesUploaded = 0;
+
+    // 1. Generate and upload the EML file
+    const emlContent = generateEmlContent(args.emailData);
+    const timestamp = Date.now();
+    const sanitizedSubject = sanitizeFilename(args.emailData.subject || "email");
+    const emlFilename = `${sanitizedSubject}_${timestamp}.eml`;
+
+    try {
+      const emlResponse = await fetch(
+        `${GRAPH_API_URL}/me/drive/items/${folderId}:/${encodeURIComponent(emlFilename)}:/content`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "message/rfc822",
+          },
+          body: emlContent,
+        }
+      );
+
+      if (!emlResponse.ok) {
+        const errorText = await emlResponse.text();
+        console.error("Failed to upload EML file:", errorText);
+        throw new Error("Failed to upload email file to OneDrive");
+      }
+
+      filesUploaded++;
+    } catch (error) {
+      console.error("Error uploading EML:", error);
+      throw new Error("Failed to upload email file to OneDrive");
+    }
+
+    // 2. Upload attachments if provided
+    if (args.attachments && args.attachments.length > 0) {
+      for (const attachment of args.attachments) {
+        try {
+          // Decode base64 content
+          const binaryContent = Uint8Array.from(atob(attachment.contentBase64), c => c.charCodeAt(0));
+          
+          const sanitizedName = sanitizeFilename(attachment.name);
+          const attachmentFilename = `${sanitizedName.replace(/\.[^/.]+$/, '')}_${timestamp}${sanitizedName.match(/\.[^/.]+$/)?.[0] || ''}`;
+
+          const attachmentResponse = await fetch(
+            `${GRAPH_API_URL}/me/drive/items/${folderId}:/${encodeURIComponent(attachmentFilename)}:/content`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": attachment.contentType || "application/octet-stream",
+              },
+              body: binaryContent,
+            }
+          );
+
+          if (!attachmentResponse.ok) {
+            const errorText = await attachmentResponse.text();
+            console.error(`Failed to upload attachment ${attachment.name}:`, errorText);
+            // Continue with other attachments even if one fails
+          } else {
+            filesUploaded++;
+          }
+        } catch (error) {
+          console.error(`Error uploading attachment ${attachment.name}:`, error);
+          // Continue with other attachments
+        }
+      }
+    }
+
+    return { success: true, filesUploaded };
+  },
+});

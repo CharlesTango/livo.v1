@@ -12,7 +12,11 @@ interface ClientOption {
   company?: string | null;
 }
 
-export function CreateMatterForm() {
+interface CreateMatterFormProps {
+  onBack?: () => void;
+}
+
+export function CreateMatterForm({ onBack }: CreateMatterFormProps) {
   // Mutations for creating matters
   const createMatter = useMutation(api.matters.create);
   const createMatterWithNewClient = useMutation(api.matters.createWithNewClient);
@@ -228,6 +232,21 @@ export function CreateMatterForm() {
   // Main form
   return (
     <div className="form-container">
+      {/* Back Button */}
+      {onBack && (
+        <button type="button" className="back-button" onClick={onBack}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </button>
+      )}
+
+      {/* Form Header */}
+      <div className="form-header-title">
+        <h2>Create Matter</h2>
+      </div>
+
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
 
