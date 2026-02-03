@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useQuery, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import type { EmailInfo } from "../lib/EmailContext";
 
 declare const Office: any;
 
@@ -20,6 +21,7 @@ interface MatterOption {
 
 interface AddToMatterFormProps {
   onBack?: () => void;
+  currentEmail: EmailInfo | null;
 }
 
 interface AttachmentInfo {
@@ -29,7 +31,7 @@ interface AttachmentInfo {
   id: string;
 }
 
-export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
+export function AddToMatterForm({ onBack, currentEmail }: AddToMatterFormProps) {
   // Queries
   const clients = useQuery(api.clients.list);
   const connectionStatus = useQuery(api.microsoft.getConnectionStatus);
@@ -47,13 +49,16 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showClientDropdown, setShowClientDropdown] = useState(false);
-  const [emailSubject, setEmailSubject] = useState("");
-  const [attachmentCount, setAttachmentCount] = useState(0);
-  const [attachments, setAttachments] = useState<AttachmentInfo[]>([]);
   
   // Toast state
   const [showToast, setShowToast] = useState(false);
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Check if we have an email selected
+  const hasEmail = currentEmail !== null;
+  const emailSubject = currentEmail?.subject || "";
+  const attachmentCount = currentEmail?.attachmentCount || 0;
+  const attachments = currentEmail?.attachments || [];
 
   // Fetch matters for selected client
   const mattersForClient = useQuery(
@@ -68,26 +73,6 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
         clearTimeout(toastTimerRef.current);
       }
     };
-  }, []);
-
-  // Get email info from Office.js on mount
-  useEffect(() => {
-    if (typeof Office !== "undefined" && Office.context?.mailbox?.item) {
-      const item = Office.context.mailbox.item;
-      setEmailSubject(item.subject || "No Subject");
-      
-      // Get attachments info
-      if (item.attachments && item.attachments.length > 0) {
-        const attachmentInfos: AttachmentInfo[] = item.attachments.map((att: any) => ({
-          name: att.name,
-          contentType: att.contentType,
-          size: att.size,
-          id: att.id,
-        }));
-        setAttachments(attachmentInfos);
-        setAttachmentCount(item.attachments.length);
-      }
-    }
   }, []);
 
   // Filter clients based on input
@@ -122,6 +107,11 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
     e.preventDefault();
     setError("");
 
+    if (!hasEmail) {
+      setError("Please select an email first.");
+      return;
+    }
+
     if (!clientId) {
       setError("Please select a client.");
       return;
@@ -140,8 +130,12 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
     setIsSubmitting(true);
 
     try {
-      // Get email data from Office.js
+      // Get email data from Office.js (need the full item for body content)
       const item = Office.context.mailbox.item;
+      
+      if (!item) {
+        throw new Error("Email is no longer available. Please select an email and try again.");
+      }
       
       // Get email body
       const bodyResult = await new Promise<{ value: string; format: string }>((resolve, reject) => {
@@ -265,21 +259,35 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
       </div>
 
       {/* Email Preview */}
-      <div className="email-preview">
-        <div className="email-preview-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+      {hasEmail ? (
+        <div className="email-preview">
+          <div className="email-preview-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div className="email-preview-content">
+            <p className="email-preview-subject">{emailSubject}</p>
+            {attachmentCount > 0 && (
+              <p className="email-preview-attachments">
+                {attachmentCount} attachment{attachmentCount > 1 ? "s" : ""}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="email-preview-content">
-          <p className="email-preview-subject">{emailSubject || "No email selected"}</p>
-          {attachmentCount > 0 && (
-            <p className="email-preview-attachments">
-              {attachmentCount} attachment{attachmentCount > 1 ? "s" : ""}
-            </p>
-          )}
+      ) : (
+        <div className="no-email-notice">
+          <div className="no-email-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div className="no-email-content">
+            <p className="no-email-title">No email selected</p>
+            <p className="no-email-hint">Select an email from your inbox to add it to a matter</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
@@ -401,7 +409,7 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
         <button
           type="submit"
           className="btn-primary btn-full"
-          disabled={isSubmitting || !clientId || !matterId || !connectionStatus?.connected}
+          disabled={isSubmitting || !clientId || !matterId || !connectionStatus?.connected || !hasEmail}
         >
           {isSubmitting ? (
             <span className="btn-loading">
@@ -411,6 +419,8 @@ export function AddToMatterForm({ onBack }: AddToMatterFormProps) {
               </svg>
               Saving...
             </span>
+          ) : !hasEmail ? (
+            "Select an email first"
           ) : (
             "Save to Matter"
           )}

@@ -93,11 +93,24 @@ export const recent = query({
     
     const limit = args.limit ?? 5;
     
-    return await ctx.db
+    const matters = await ctx.db
       .query("matters")
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .order("desc")
       .take(limit);
+    
+    // Fetch client info for each matter
+    const mattersWithClients = await Promise.all(
+      matters.map(async (matter) => {
+        const client = await ctx.db.get(matter.clientId);
+        return {
+          ...matter,
+          client,
+        };
+      })
+    );
+    
+    return mattersWithClients;
   },
 });
 

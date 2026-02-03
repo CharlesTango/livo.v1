@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useConvexAuth } from "convex/react";
 import { ConvexClientProvider } from "./lib/convex";
+import { EmailProvider, useEmail } from "./lib/EmailContext";
 import { AuthLogin } from "./components/AuthLogin";
 import { CreateMatterForm } from "./components/CreateMatterForm";
 import { AddToMatterForm } from "./components/AddToMatterForm";
@@ -9,101 +10,12 @@ import { MainMenu } from "./components/MainMenu";
 type ViewType = "menu" | "create-matter" | "add-to-matter";
 
 function AppContent() {
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
+  const { currentEmail, hasEmail, isLoading: emailLoading } = useEmail();
   const [currentView, setCurrentView] = useState<ViewType>("menu");
 
-  useEffect(() => {
-    const runId = "pre-fix";
-    const icon64Url = "https://localhost:3001/assets/icon-64.png";
-    const icon128Url = "https://localhost:3001/assets/icon-128.png";
-
-    // #region agent log
-    fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sessionId: "debug-session",
-        runId,
-        hypothesisId: "H1",
-        location: "App.tsx:15",
-        message: "Taskpane runtime context",
-        data: {
-          href: window.location.href,
-          origin: window.location.origin,
-          isSecureContext: window.isSecureContext,
-        },
-        timestamp: Date.now(),
-      }),
-    }).catch(() => {});
-    // #endregion agent log
-
-    const probe = (url: string, hypothesisId: string) => {
-      // #region agent log
-      fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: "debug-session",
-          runId,
-          hypothesisId,
-          location: "App.tsx:32",
-          message: "Icon fetch start",
-          data: { url },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion agent log
-
-      fetch(url, { cache: "no-store" })
-        .then((response) => {
-          // #region agent log
-          fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              sessionId: "debug-session",
-              runId,
-              hypothesisId,
-              location: "App.tsx:49",
-              message: "Icon fetch response",
-              data: {
-                url,
-                ok: response.ok,
-                status: response.status,
-                statusText: response.statusText,
-                redirected: response.redirected,
-                type: response.type,
-              },
-              timestamp: Date.now(),
-            }),
-          }).catch(() => {});
-          // #endregion agent log
-        })
-        .catch((error: Error) => {
-          // #region agent log
-          fetch("http://127.0.0.1:7243/ingest/eaeb51b8-92ad-488d-a31b-c9c2d792a076", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              sessionId: "debug-session",
-              runId,
-              hypothesisId,
-              location: "App.tsx:70",
-              message: "Icon fetch error",
-              data: { url, name: error.name, message: error.message },
-              timestamp: Date.now(),
-            }),
-          }).catch(() => {});
-          // #endregion agent log
-        });
-    };
-
-    probe(icon64Url, "H2");
-    probe(icon128Url, "H3");
-  }, []);
-
-  // Loading state
-  if (isLoading) {
+  // Loading state (auth or email context)
+  if (authLoading || emailLoading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner">
@@ -127,17 +39,19 @@ function AppContent() {
   }
 
   if (currentView === "add-to-matter") {
-    return <AddToMatterForm onBack={handleBackToMenu} />;
+    return <AddToMatterForm onBack={handleBackToMenu} currentEmail={currentEmail} />;
   }
 
   // Default: show main menu
-  return <MainMenu onSelectView={setCurrentView} />;
+  return <MainMenu onSelectView={setCurrentView} hasEmail={hasEmail} currentEmail={currentEmail} />;
 }
 
 export function App() {
   return (
     <ConvexClientProvider>
-      <AppContent />
+      <EmailProvider>
+        <AppContent />
+      </EmailProvider>
     </ConvexClientProvider>
   );
 }

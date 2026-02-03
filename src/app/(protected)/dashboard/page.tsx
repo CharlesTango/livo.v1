@@ -159,11 +159,15 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h4 className="text-xl font-heading font-bold text-secondary">{matter.title}</h4>
-                        <p className="text-secondary/60 mt-2 line-clamp-1 font-body">
-                          {matter.description || "No description"}
-                        </p>
-                        <div className="flex items-center gap-4 mt-4">
+                        <div className="flex items-baseline gap-3 mb-4">
+                          <h4 className="text-xl font-heading font-bold text-secondary">
+                            {matter.client?.name || "Unknown Client"}
+                          </h4>
+                          <span className="text-lg font-body text-secondary/70">
+                            {matter.title}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4">
                           <Badge variant="default" className={matterStatusColors[matter.status]}>
                             {matter.status.replace("-", " ")}
                           </Badge>
