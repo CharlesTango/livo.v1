@@ -8,11 +8,14 @@
  * @module
  */
 
+import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
+import type * as clauses from "../clauses.js";
 import type * as clients from "../clients.js";
 import type * as http from "../http.js";
 import type * as matters from "../matters.js";
 import type * as microsoft from "../microsoft.js";
+import type * as playbooks from "../playbooks.js";
 import type * as users from "../users.js";
 
 import type {
@@ -22,11 +25,14 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  ai: typeof ai;
   auth: typeof auth;
+  clauses: typeof clauses;
   clients: typeof clients;
   http: typeof http;
   matters: typeof matters;
   microsoft: typeof microsoft;
+  playbooks: typeof playbooks;
   users: typeof users;
 }>;
 

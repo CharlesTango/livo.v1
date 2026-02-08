@@ -175,3 +175,5 @@
 {"location":"outlook-addin/src/index.tsx:16","message":"Unhandled rejection","data":{"reason":"TypeError: Failed to fetch"},"timestamp":1769944340201,"sessionId":"debug-session","runId":"run1","hypothesisId":"C"}
 {"location":"outlook-addin/src/index.tsx:6","message":"Module loaded","data":{"hasOffice":true},"timestamp":1770066941139,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"outlook-addin/src/index.tsx:22","message":"Office.onReady","data":{"host":null,"platform":null},"timestamp":1770066941141,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"outlook-addin/src/index.tsx:6","message":"Module loaded","data":{"hasOffice":true},"timestamp":1770154195249,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"outlook-addin/src/index.tsx:22","message":"Office.onReady","data":{"host":null,"platform":null},"timestamp":1770154195249,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}

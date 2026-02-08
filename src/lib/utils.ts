@@ -37,3 +37,9 @@ export const priorityColors: Record<string, string> = {
   high: "bg-primary-yellow/20 text-secondary",
   urgent: "bg-accent-error/10 text-accent-error",
 };
+
+export const playbookStatusColors: Record<string, string> = {
+  processing: "bg-primary-yellow/20 text-secondary",
+  ready: "bg-accent-success/10 text-accent-success",
+  error: "bg-accent-error/10 text-accent-error",
+};
