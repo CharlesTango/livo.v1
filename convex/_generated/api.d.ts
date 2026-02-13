@@ -9,6 +9,7 @@
  */
 
 import type * as ai from "../ai.js";
+import type * as analysis from "../analysis.js";
 import type * as auth from "../auth.js";
 import type * as clauses from "../clauses.js";
 import type * as clients from "../clients.js";
@@ -17,6 +18,7 @@ import type * as matters from "../matters.js";
 import type * as microsoft from "../microsoft.js";
 import type * as playbooks from "../playbooks.js";
 import type * as users from "../users.js";
+import type * as vectorDb from "../vectorDb.js";
 
 import type {
   ApiFromModules,
@@ -26,6 +28,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   ai: typeof ai;
+  analysis: typeof analysis;
   auth: typeof auth;
   clauses: typeof clauses;
   clients: typeof clients;
@@ -34,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   microsoft: typeof microsoft;
   playbooks: typeof playbooks;
   users: typeof users;
+  vectorDb: typeof vectorDb;
 }>;
 
 /**

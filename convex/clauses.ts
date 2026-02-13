@@ -198,6 +198,28 @@ export const createMany = internalMutation({
   },
 });
 
+// Update cached market intelligence for a clause
+export const updateMarketIntelligence = mutation({
+  args: {
+    clauseId: v.id("clauses"),
+    marketIntelligence: v.any(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const clause = await ctx.db.get(args.clauseId);
+    if (!clause || clause.userId !== userId) {
+      throw new Error("Clause not found");
+    }
+
+    await ctx.db.patch(args.clauseId, {
+      marketIntelligence: args.marketIntelligence,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
 // Delete a single clause
 export const remove = mutation({
   args: { id: v.id("clauses") },

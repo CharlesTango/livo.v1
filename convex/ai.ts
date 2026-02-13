@@ -276,3 +276,154 @@ export const startProcessing = action({
     return { scheduled: true };
   },
 });
+
+// ═══════════════════════════════════════════════════════════════
+// Vector-Enhanced Analysis: Compare playbook clauses against
+// the vector database for market insights and benchmarking
+// ═══════════════════════════════════════════════════════════════
+
+// Get vector-enhanced commentary for a single clause
+export const getVectorCommentary = action({
+  args: {
+    clauseText: v.string(),
+    clauseTitle: v.string(),
+  },
+  handler: async (ctx, args): Promise<any> => {
+    const voyageKey = process.env.VOYAGE_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!voyageKey || !anthropicKey) {
+      return {
+        available: false,
+        message: "Vector analysis requires VOYAGE_API_KEY and ANTHROPIC_API_KEY",
+      };
+    }
+
+    try {
+      // Generate embedding for the clause via Voyage AI (legal-optimized)
+      const embeddingResponse = await fetch("https://api.voyageai.com/v1/embeddings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${voyageKey}`,
+        },
+        body: JSON.stringify({
+          model: "voyage-law-2",
+          input: [args.clauseText.slice(0, 64000)],
+          input_type: "document",
+        }),
+      });
+
+      if (!embeddingResponse.ok) {
+        return { available: false, message: "Failed to generate embedding" };
+      }
+
+      const embData = await embeddingResponse.json();
+      const embedding = embData.data[0].embedding;
+
+      // Search for similar clauses in the vector DB
+      const results = await ctx.vectorSearch("agreementClauses", "by_embedding", {
+        vector: embedding,
+        limit: 8,
+      });
+
+      if (results.length === 0) {
+        return {
+          available: true,
+          similarClauses: [],
+          commentary: "No similar clauses found in the agreement database. This may be a unique or non-standard provision.",
+          marketAlignment: "unknown",
+        };
+      }
+
+      // Fetch full clause data
+      const ids = results.map((r) => r._id as Id<"agreementClauses">);
+      const docs: any[] = await ctx.runQuery(internal.vectorDb.getClausesByIds, { ids });
+
+      interface SimilarClause {
+        title: string;
+        agreementName: string;
+        clauseType: string;
+        summary: string;
+        riskLevel: string;
+        favorability: string;
+        similarity: number;
+      }
+
+      const similarClauses: SimilarClause[] = results.map((r) => {
+        const doc = docs.find((d: any) => d._id === r._id);
+        if (!doc) return null;
+        return {
+          title: doc.title as string,
+          agreementName: doc.agreementName as string,
+          clauseType: doc.clauseType as string,
+          summary: doc.summary as string,
+          riskLevel: doc.riskLevel as string,
+          favorability: doc.favorability as string,
+          similarity: r._score,
+        };
+      }).filter(Boolean) as SimilarClause[];
+
+      // Analyze patterns
+      const riskCounts: Record<string, number> = { low: 0, medium: 0, high: 0 };
+      const favCounts: Record<string, number> = { "provider-favorable": 0, neutral: 0, "customer-favorable": 0 };
+      for (const clause of similarClauses) {
+        if (clause.riskLevel in riskCounts) riskCounts[clause.riskLevel]++;
+        if (clause.favorability in favCounts) favCounts[clause.favorability]++;
+      }
+
+      const avgSim: number = similarClauses.reduce((sum: number, c: SimilarClause) => sum + (c.similarity || 0), 0) / similarClauses.length;
+      const dominantRisk = Object.entries(riskCounts).sort(([, a]: [string, number], [, b]: [string, number]) => b - a)[0][0];
+      const dominantFav = Object.entries(favCounts).sort(([, a]: [string, number], [, b]: [string, number]) => b - a)[0][0];
+
+      // Generate AI commentary using Claude
+      const similarContext = similarClauses
+        .slice(0, 5)
+        .map((c: SimilarClause) => `- ${c.agreementName}: "${c.title}" (${c.riskLevel} risk, ${c.favorability}, ${((c.similarity || 0) * 100).toFixed(0)}% similar)`)
+        .join("\n");
+
+      const commentaryResponse = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": anthropicKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          temperature: 0.3,
+          system: `You are a legal analyst providing comparative insights. Given a clause and similar clauses from major SaaS providers, provide a brief 2-3 sentence market commentary. Focus on: how this clause compares to market standard, key risks, and negotiation leverage. Be direct and actionable.`,
+          messages: [{
+            role: "user",
+            content: `Clause being analyzed: "${args.clauseTitle}"\n\nClause text: ${args.clauseText.slice(0, 2000)}\n\nSimilar clauses found in our database:\n${similarContext}\n\nAverage similarity: ${(avgSim * 100).toFixed(0)}%\nDominant risk level in corpus: ${dominantRisk}\nDominant favorability: ${dominantFav}\n\nProvide brief market commentary:`,
+          }],
+        }),
+      });
+
+      let commentary = "";
+      if (commentaryResponse.ok) {
+        const commentaryData = await commentaryResponse.json();
+        commentary = commentaryData.content?.[0]?.text || "";
+      }
+
+      return {
+        available: true,
+        similarClauses: similarClauses.slice(0, 5),
+        commentary,
+        marketAlignment: avgSim > 0.85 ? "standard" : avgSim > 0.7 ? "moderate" : "unique",
+        avgSimilarity: avgSim,
+        riskDistribution: riskCounts,
+        favorabilityDistribution: favCounts,
+        dominantRisk,
+        dominantFavorability: dominantFav,
+      };
+    } catch (error) {
+      console.error("Vector commentary error:", error);
+      return {
+        available: false,
+        message: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  },
+});

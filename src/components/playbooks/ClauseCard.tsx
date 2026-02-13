@@ -5,6 +5,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { Button, Input, Textarea } from "@/components/ui";
+import { MarketIntelligencePanel, CachedIntelligence } from "./MarketIntelligencePanel";
 
 interface FallbackPosition {
   position: string;
@@ -20,6 +21,7 @@ interface Clause {
   description?: string;
   talkingPoints?: string[];
   fallbackPositions?: FallbackPosition[];
+  marketIntelligence?: CachedIntelligence;
 }
 
 interface ClauseCardProps {
@@ -31,6 +33,7 @@ interface ClauseCardProps {
 export function ClauseCard({ clause, isExpanded, onToggle }: ClauseCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showIntelligence, setShowIntelligence] = useState(false);
 
   // Editable fields
   const [summary, setSummary] = useState(clause.summary || "");
@@ -338,6 +341,45 @@ export function ClauseCard({ clause, isExpanded, onToggle }: ClauseCardProps) {
                   )}
                 </div>
               </>
+            )}
+          </div>
+
+          {/* ── Market Intelligence (collapsible) ── */}
+          <div className="border-t border-neutral-light">
+            <button
+              onClick={() => setShowIntelligence((prev) => !prev)}
+              className="w-full px-6 py-3 flex items-center justify-between hover:bg-neutral-light/30 transition-colors"
+            >
+              <span className="flex items-center gap-2 text-sm font-bold text-secondary/70">
+                <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  />
+                </svg>
+                Market Intelligence
+              </span>
+              <svg
+                className={`w-4 h-4 text-secondary/40 transition-transform ${showIntelligence ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {showIntelligence && (
+              <div className="px-6 pb-5">
+                <MarketIntelligencePanel
+                  clauseId={clause._id}
+                  clauseTitle={clause.title}
+                  clauseText={clause.originalText}
+                  cachedIntelligence={clause.marketIntelligence}
+                />
+              </div>
             )}
           </div>
         </div>

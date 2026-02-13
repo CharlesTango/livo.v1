@@ -9,6 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "download:agreements": "npx tsx scripts/download-agreements.ts",
+    "seed:vector-db": "npx tsx scripts/seed-vector-db.ts",
     "addin:install": "cd outlook-addin && npm install",
     "addin:dev": "cd outlook-addin && npm run dev",
     "addin:build": "cd outlook-addin && npm run build"
@@ -22,6 +24,7 @@
     "next": "^14.2.35",
     "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^5.4.624",
+    "puppeteer": "^24.37.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -33,6 +36,7 @@
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
